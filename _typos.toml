@@ -1,0 +1,6 @@
+[files]
+extend-exclude = [
+    "netw-ib-ox-ag-5.39.0/",
+    "CHANGELOG.md",
+    "target/",
+]

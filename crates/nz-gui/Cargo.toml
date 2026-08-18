@@ -1,0 +1,13 @@
+[package]
+name = "nz-gui"
+description = "Network toolbox GUI (netwag successor, egui)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+nz-net = { path = "../nz-net" }
+
+[lints]
+workspace = true

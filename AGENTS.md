@@ -1,6 +1,6 @@
 # nz
 
-Rust 复刻 Laurent Constantin 的 **netwib + netwox + netwag 5.39.0**，再扩展现代协议。
+Rust 复兴 Laurent Constantin 的 **netwib + netwox + netwag 5.39.0** 能力全集，再扩展现代协议。
 
 对照源（只读、不进 git）：`netw-ib-ox-ag-5.39.0/`。细则见 `.cursor/rules/`。
 
@@ -9,7 +9,7 @@ Rust 复刻 Laurent Constantin 的 **netwib + netwox + netwag 5.39.0**，再扩�
 | 层 | 原组件 | nz | 对齐对象 |
 |----|--------|-----|----------|
 | 库 | netwib | 计划中的 `nz-net` | `dat/sys/net/pkt/shw` **能力**，不复制 C API |
-| CLI | netwox | `nz` | 223 个工具的行为 + **工具 0**（GUI 契约） |
+| CLI | netwox | `nz` | 223 个工具能力全覆盖 + **工具 0**（GUI 契约） |
 | GUI | netwag | 计划中的 `nz-gui` | lessons 工作流；**仅 native crate** |
 
 依赖方向：库 → CLI → GUI。禁止在库能力未定义时堆工具特例。
@@ -26,11 +26,19 @@ Rust 复刻 Laurent Constantin 的 **netwib + netwox + netwag 5.39.0**，再扩�
 
 未经确认不进入下一闸。对齐完成前禁止用「现代化」改旧工具语义。
 
+## 复刻口径
+
+- 能力口径：覆盖 netwox/netwib/netwag 的功能全集，不遗漏工具和关键工作流
+- 产品口径：允许非 1:1 克隆（命令组织、内部架构、UI 呈现可现代化）
+- 兼容口径：工具参数语义、协议行为、工具 0 契约必须可映射并可验证
+- 许可证口径：按 GPL-3 路线推进；除非后续有法律层面的新决议
+
 ## 必须做
 
 - 非琐碎决策：问题 + 2～3 方案 + 优缺点 + 推荐；等确认再落盘
-- 一次任务 = 一个可验收完整功能（测试全绿、零 warning、一次 git 提交）
-- review 意见落地后再提交一次，不 amend 上一笔
+- 一次任务 = 一个可验收完整功能（测试全绿、零 warning）
+- 提交前用户 review（可多轮）；确认无误后才提交一次
+- 提交后若只改这一笔且尚未开始后续功能，发现问题可 `--amend`；功能集已完成或后面已有别的功能提交则必须新提交，不 amend
 - `cargo build` / `cargo test` / `cargo clippy --all-targets -- -D warnings` 零告警
 - 嗅探/伪造/扫描仅本机、实验室或书面授权目标
 
@@ -47,6 +55,17 @@ Rust 复刻 Laurent Constantin 的 **netwib + netwox + netwag 5.39.0**，再扩�
 ## 测试「100%」
 
 硬门槛：该单元 spec 每条验收都有自动化测试且全绿。库代码行覆盖目标 ≥ 95%（缺口写进 spec）。特权路径用 pcap 回放 / 假接口 / `privileged-tests`，CI 不依赖 root。
+
+## 工程基础设施
+
+- **Workspace**：`crates/nz-net`（库）+ `crates/nz`（CLI）+ `crates/nz-gui`（GUI）
+- **CI**：GitHub Actions（`ci.yml` fmt/clippy/nextest/deny/typos/coverage，macOS + Linux 矩阵）
+- **Release**：git-cliff changelog + GitHub Release（tag `v*` 触发）；release-plz 自动 bump PR
+- **本地钩子**：pre-commit（fmt → clippy → nextest → deny → typos）
+- **供应链**：cargo-deny（许可证 + 安全公告 + 来源审计）
+- **覆盖率**：cargo-llvm-cov → Codecov
+- **格式**：rustfmt（`imports_granularity = "Crate"`）
+- **Commit 规范**：Conventional Commits（`feat/fix/docs/refactor/test/ci`）
 
 ## 文档地图
 

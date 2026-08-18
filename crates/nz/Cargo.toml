@@ -1,0 +1,13 @@
+[package]
+name = "nz"
+description = "Network toolbox CLI (netwox successor)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+nz-net = { path = "../nz-net" }
+
+[lints]
+workspace = true

@@ -5,3 +5,17 @@ version = 4
 [[package]]
 name = "nz"
 version = "0.1.0"
+dependencies = [
+ "nz-net",
+]
+
+[[package]]
+name = "nz-gui"
+version = "0.1.0"
+dependencies = [
+ "nz-net",
+]
+
+[[package]]
+name = "nz-net"
+version = "0.1.0"

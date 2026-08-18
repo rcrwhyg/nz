@@ -1,2 +1,4 @@
 /target
 /netw-ib-ox-ag-5.39.0/
+.env
+lcov.info

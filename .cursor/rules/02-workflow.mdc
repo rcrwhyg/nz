@@ -13,10 +13,10 @@ alwaysApply: true
 2. 实现 + 自动化测试
 3. `cargo test` 全绿
 4. 零 rustc/clippy warning（见 `05-rust.mdc`）
-5. 一次本地 git 提交
-6. 等用户 review
+5. 请用户 review（可反复改，此时还不 commit）
+6. 用户确认没问题后，才本地 git 提交一次
 
-用户 review 后的修改 = **另一次提交**，不把改动塞进上一笔。
+提交后的修补见 `04-git.mdc`（何时可 `--amend`，何时必须新提交）。
 
 闸门：骨架 → 抽文档 → skills 正文 → spec → crate/CLI/工具 0 → 按族实现 → GUI。
 
