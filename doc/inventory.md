@@ -212,7 +212,7 @@ SMB/CIFS：198–209 客户端文件/目录；217 server。
 
 | 面 | 要点 |
 |----|------|
-| Local_info | 本机 devices / IP / ARP / routes（后端即工具 1/169 一类） |
+| Local_info | 本机 devices / IP / ARP / routes。启动走工具 0 `-c`；字段对齐工具 1/169。见 [netwag/workflows.md](netwag/workflows.md) |
 | Remote_info | 查远端主机（工具 3 一类） |
 | Clipboard | 多剪贴板、共享小剪贴板 |
 | Search | 按树/关键字搜工具（工具 0 `--tools`） |

@@ -8,5 +8,6 @@
 已完成：
 
 - [tool0.md](tool0.md) — GUI 契约（无 `0.html`，以 `000000.c` 为准）
+- [info.md](info.md) — 信息/本地工具 1–6、12–13、169、187、213、218
 
 工具全表见 [../inventory.md](../inventory.md)。工具 spec 模板：`spec/TEMPLATE-tool.md`。

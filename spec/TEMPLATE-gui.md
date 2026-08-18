@@ -15,7 +15,7 @@
 
 ## native 约束
 
-禁止 webview。实现 crate 在 GUI 闸选定（egui / iced / slint）。
+禁止 webview。实现 crate：**egui**（已拍板）。
 
 ## 验收
 

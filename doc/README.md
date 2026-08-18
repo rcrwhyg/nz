@@ -13,7 +13,7 @@
 | [gaps.md](gaps.md) | 动手写代码前仍待拍板的缺口 |
 | [netwib/](netwib/README.md) | 库能力摘录（进行中） |
 | [netwox/](netwox/README.md) | 工具/协议摘录（进行中） |
-| [netwag/](netwag/README.md) | GUI 工作流摘录 |
+| [netwag/](netwag/README.md) | GUI 工作流摘录（进行中） |
 
 ## 抽取规则（第 1 闸才执行）
 
