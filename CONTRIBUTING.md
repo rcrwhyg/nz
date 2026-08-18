@@ -12,7 +12,7 @@ Thank you for your interest in contributing!
    pre-commit install
    ```
 3. Build: `cargo build`
-4. Test: `cargo nextest run --all-features`
+4. Test: `cargo nextest run --all-features --no-tests warn`
 
 ## Commit Convention
 
@@ -31,9 +31,11 @@ Before submitting a PR, ensure:
 
 - `cargo fmt --all -- --check` passes
 - `cargo clippy --all-targets --all-features -- -D warnings` is clean
-- `cargo nextest run --all-features` all green
+- `cargo nextest run --all-features --no-tests warn` is green
 - `cargo deny check` passes
 - `typos` finds no issues
+
+For changes headed to GitHub, run the full local gate before push so it matches CI as closely as practical.
 
 Or simply run `pre-commit run --all-files`.
 
