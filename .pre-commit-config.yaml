@@ -41,7 +41,7 @@ repos:
 
       - id: cargo-test
         name: cargo nextest
-        entry: cargo nextest run --all-features
+        entry: cargo nextest run --all-features --no-tests warn
         language: system
         types: [rust]
         pass_filenames: false

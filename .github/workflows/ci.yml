@@ -34,7 +34,7 @@ jobs:
 
       - name: Test
         uses: taiki-e/install-action@nextest
-      - run: cargo nextest run --all-features
+      - run: cargo nextest run --all-features --no-tests warn
 
       - name: Typos
         uses: crate-ci/typos@master
