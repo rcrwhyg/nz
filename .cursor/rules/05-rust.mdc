@@ -1,0 +1,19 @@
+---
+description: 零 warning、依赖卫生、unsafe 与 edition
+globs: "**/{Cargo.toml,Cargo.lock,rust-toolchain.toml,.cargo/**,*.rs}"
+alwaysApply: false
+---
+
+# Rust
+
+`cargo build`、`cargo test` 必须零告警。`.cargo/config.toml` 已设 `rustflags = ["-D", "warnings"]`。
+
+合并或提交前再跑：`cargo clippy --all-targets -- -D warnings`。
+
+禁止无 spec 理由的 `#[allow(...)]`。禁止引入只为消警告而改语义的代码。
+
+依赖：先读本仓库 `Cargo.toml`；API 以 docs.rs / 已锁定版本为准，不臆造。edition 以 `Cargo.toml` 为准（当前 2024）。
+
+`unsafe` 仅在用户同意且无安全替代时使用，每个块写安全不变量。
+
+async 里禁止阻塞 IO。server-only 依赖不得泄漏进非该目标的 crate。

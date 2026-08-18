@@ -1,0 +1,23 @@
+---
+description: 细粒度任务、闸门顺序、spec 先行
+alwaysApply: true
+---
+
+# 工作流
+
+一次任务 = 一个可独立验收、可 git 回退的完整功能（例如一个工具、一块库能力、一条 GUI 工作流）。
+
+完成条件（全部满足才算完）：
+
+1. 对应 spec 已存在且本任务范围内
+2. 实现 + 自动化测试
+3. `cargo test` 全绿
+4. 零 rustc/clippy warning（见 `05-rust.mdc`）
+5. 一次本地 git 提交
+6. 等用户 review
+
+用户 review 后的修改 = **另一次提交**，不把改动塞进上一笔。
+
+闸门：骨架 → 抽文档 → skills 正文 → spec → crate/CLI/工具 0 → 按族实现 → GUI。
+
+先库能力，再 CLI，再 GUI。禁止为单个工具复制一套私有编解码。

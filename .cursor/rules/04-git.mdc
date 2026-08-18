@@ -1,0 +1,22 @@
+---
+description: 一功能一提交、review 再提交、参考树永不入库
+alwaysApply: true
+---
+
+# Git
+
+提交时机：
+
+- 一个完整功能做完（测试全绿、零 warning）→ 提交一次
+- 用户 review 意见落地 → 再提交一次
+- 禁止把 review 修改 `--amend` 进上一笔（除非用户明确要求且该提交未 push）
+
+提交说明写为什么，前缀例如：`docs(agent):`、`feat(info-001):`、`fix(pkt):`。
+
+禁止：
+
+- `git add netw-ib-ox-ag-5.39.0/` 或其子路径
+- `--no-verify`、`--no-gpg-sign`、force push
+- 提交密钥、`.env`、Windows 预编译对照包
+
+不改 `git config`。不 push，除非用户明确要求。
