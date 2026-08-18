@@ -21,7 +21,7 @@ HTML 入口：`netw-ib-ox-ag-5.39.0/src/netwib-doc_html/`。
 
 | 号 | 标题 | 说明 |
 |----|------|------|
-| 0 | Obtain information needed by netwag | `--tools` `-h` `-f` `-r` `-R` `-k` `-c` `-v`；非交互用户工具 |
+| 0 | Obtain information needed by netwag | `--tools` `-h` `-f` `-r` `-R` `-k` `-e` `-c` `-v`；附带 `-b`/`-u`；非交互用户工具。详见 [netwox/tool0.md](netwox/tool0.md) |
 
 ## netwox 1–223
 
@@ -130,8 +130,8 @@ HTML 入口：`netw-ib-ox-ag-5.39.0/src/netwib-doc_html/`。
 | 150–151 | Scan ICMP6 Neighbor Discovery（及 spoof） |
 | 214–215 | Traceroute discovery 拓扑图（及 spoof） |
 
-49–56 展开：49 ICMP；50 ICMP spoof；51 TCP；52 TCP spoof；53 UDP；54 UDP spoof；55 ARP；56 ARP spoof。  
-57–64：57 ICMP；58 ICMP spoof；59 TCP；60 TCP spoof；61 UDP；62 UDP spoof；63 指定协议；64 指定协议 spoof。  
+49–56 展开：49 ICMP；50 ICMP spoof；51 TCP；52 TCP spoof；53 UDP；54 UDP spoof；55 ARP；56 ARP spoof。
+57–64：57 ICMP；58 ICMP spoof；59 TCP；60 TCP spoof；61 UDP；62 UDP spoof；63 指定协议；64 指定协议 spoof。
 65–72：65 ICMP；66 ICMP spoof；67 TCP；68 TCP spoof；69 UDP；70 UDP spoof；71 ARP；72 ARP spoof。
 
 ### 通用 client / server / relay / perf / bridge
@@ -164,20 +164,20 @@ HTML 入口：`netw-ib-ox-ag-5.39.0/src/netwib-doc_html/`。
 
 ### 应用协议
 
-DNS：102 Query；103 Bind version；104 固定应答 server；105 sniff 并应答。  
-SYSLOG：97 client；188 server。  
-TELNET：99 client；100 执行命令；170 server。  
-SMTP/邮件：106 发送；177 探测；189 server；223 转发。  
-NNTP：107 发帖；108 列表；109 下载；172 文章范围；173 overview。  
-FTP：111–117 列/get/put/del 及递归；168 server；174 get+MD5。  
-HTTP：118–124 GET/HEAD/POST/PUT/DELETE/TRACE/OPTIONS；125 server；136/175/182 下载与 MD5/size；137–139、210 spider；133–135、211–212、222 URL/HTML。  
-IRC：152 交互；153 列频道；154 听频道；178 探测。  
-SNMP：159 Get；160 Walk；161 Trap；162 Trap2；163 Inform；164 Set。  
-TFTP：165 get；166 put；167 server；176 get+MD5。  
-DHCP：171 client；179 INFORM。  
-SNTP：180 client；181 server。  
-IDENT：193 查会话；194 建会话再查；195 server。  
-WHOIS：196 client；197 猜 server。  
+DNS：102 Query；103 Bind version；104 固定应答 server；105 sniff 并应答。
+SYSLOG：97 client；188 server。
+TELNET：99 client；100 执行命令；170 server。
+SMTP/邮件：106 发送；177 探测；189 server；223 转发。
+NNTP：107 发帖；108 列表；109 下载；172 文章范围；173 overview。
+FTP：111–117 列/get/put/del 及递归；168 server；174 get+MD5。
+HTTP：118–124 GET/HEAD/POST/PUT/DELETE/TRACE/OPTIONS；125 server；136/175/182 下载与 MD5/size；137–139、210 spider；133–135、211–212、222 URL/HTML。
+IRC：152 交互；153 列频道；154 听频道；178 探测。
+SNMP：159 Get；160 Walk；161 Trap；162 Trap2；163 Inform；164 Set。
+TFTP：165 get；166 put；167 server；176 get+MD5。
+DHCP：171 client；179 INFORM。
+SNTP：180 client；181 server。
+IDENT：193 查会话；194 建会话再查；195 server。
+WHOIS：196 client；197 猜 server。
 SMB/CIFS：198–209 客户端文件/目录；217 server。
 
 ### DEFERRED 审计 / 暴力破解

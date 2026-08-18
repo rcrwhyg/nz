@@ -12,7 +12,7 @@ alwaysApply: false
 
 禁止无 spec 理由的 `#[allow(...)]`。禁止引入只为消警告而改语义的代码。
 
-依赖：先读本仓库 `Cargo.toml`；API 以 docs.rs / 已锁定版本为准，不臆造。edition 以 `Cargo.toml` 为准（当前 2024）。
+依赖：先读本仓库 `Cargo.toml`；API 以 docs.rs / 已锁定版本为准，不臆造。edition 以 `Cargo.toml` 为准（当前 2024）。toolchain 以 `rust-toolchain.toml` 为准（stable）。
 
 `unsafe` 仅在用户同意且无安全替代时使用，每个块写安全不变量。
 

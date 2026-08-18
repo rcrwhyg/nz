@@ -8,3 +8,8 @@ extend-exclude = [
 [default.extend-words]
 shw = "shw"
 predictible = "predictible"
+hashi = "hashi"
+ringi = "ringi"
+ipsi = "ipsi"
+ethsi = "ethsi"
+portsi = "portsi"

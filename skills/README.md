@@ -14,7 +14,7 @@
 | 要 / 不要 / 合并 | `nz-spec-authoring` | 按模板从 HTML/`000NNN.c` 写 spec |
 | 要 / 不要 / 合并 | `nz-parity` | 对照原参数、输出、pcap |
 | 要 / 不要 / 合并 | `nz-testing` | 验收、特权隔离、覆盖率解释 |
-| 要 / 不要 / 合并 | `nz-git-feature` | 提交前 review；确认后一笔；同笔可 amend；跨功能不 amend；不 add 对照树 |
+| 要 / 不要 / 合并 | `nz-git-feature` | 提交前 review；确认后一笔；同笔可 amend（含 CI 失败后 force-with-lease）；跨功能不 amend；须 `pre-commit install`；不 add 对照树 |
 
 ## 领域（实现时加载）
 

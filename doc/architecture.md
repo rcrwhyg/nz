@@ -5,9 +5,9 @@
 ```
 netwib (C 库)     -->  nz-net（Rust 等价能力）
      |
-netwox (CLI)      -->  nz（clap 数字工具号 + 具名子命令，CLI 双入口待拍板）
+netwox (CLI)      -->  nz（数字工具号 + 具名子命令，双模式）
      |
-netwag (Tcl/Tk)   -->  nz-gui（native crate：egui / iced / slint，禁止 webview）
+netwag (Tcl/Tk)   -->  nz-gui（native crate：egui，禁止 webview）
 ```
 
 安装/运行依赖（原版）：libpcap 或 WinPcap、可选 libnet、Tcl/Tk（仅 GUI）。Rust 侧用生态 crate 替代，不链原 `libnetwib`。

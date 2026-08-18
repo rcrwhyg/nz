@@ -11,37 +11,39 @@ repos:
       - id: end-of-file-fixer
 
   - repo: https://github.com/EmbarkStudios/cargo-deny
-    rev: 0.16.3
+    rev: 0.20.2
     hooks:
       - id: cargo-deny
         args: ["--all-features", "check"]
+        always_run: true
 
   - repo: local
     hooks:
       - id: typos
         name: typos
-        entry: typos
+        entry: typos --config _typos.toml
         language: system
         types: [text]
         pass_filenames: false
+        always_run: true
 
       - id: cargo-fmt
         name: cargo fmt
         entry: cargo fmt --all -- --check
         language: system
-        types: [rust]
         pass_filenames: false
+        always_run: true
 
       - id: cargo-clippy
         name: cargo clippy
         entry: cargo clippy --all-targets --all-features -- -D warnings
         language: system
-        types: [rust]
         pass_filenames: false
+        always_run: true
 
       - id: cargo-test
         name: cargo nextest
         entry: cargo nextest run --all-features --no-tests warn
         language: system
-        types: [rust]
         pass_filenames: false
+        always_run: true

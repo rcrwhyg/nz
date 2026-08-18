@@ -9,21 +9,29 @@ alwaysApply: true
 
 1. 功能做完（测试全绿、零 warning）
 2. 请用户 review，可多轮修改，此时不要 commit
-3. 用户确认没问题 → 提交恰好一次
+3. 确认本仓库已 `pre-commit install`（`.git/hooks/pre-commit` 存在）。未初始化则先装再提交，禁止 `--no-verify`
+4. 用户确认没问题 → 提交恰好一次（钩子即本地质量门）
 
 提交后，仍停在「这一笔小功能」时：
 
 - 发现问题可以 `--amend`（可多次）
-- 仅当：HEAD 就是这一笔、中间没有其他功能提交、且尚未 push
+- 仅当：HEAD 就是这一笔、中间没有其他功能提交
+
+GitHub Actions 失败（本地钩子已过、远端未过）：
+
+1. 查明失败原因
+2. 修进**同一笔**：`git commit --amend`
+3. 若该笔已 push：允许且仅允许 `git push --force-with-lease`（不是 `--force`）
+4. 前提仍是：HEAD 就是这一笔、后面没有新功能提交
 
 必须新开提交、禁止 amend：
 
-- 这一笔已经 push
 - 用户宣告该小功能集完成
 - HEAD 之后已经又提交了别的小功能或功能集
+- CI 绿了之后再改，属于新问题
 
 提交说明写为什么，前缀例如：`docs(agent):`、`feat(info-001):`、`fix(pkt):`。
 
-禁止：`git add netw-ib-ox-ag-5.39.0/`、`--no-verify`、`--no-gpg-sign`、force push、提交密钥/`.env`。
+禁止：`git add netw-ib-ox-ag-5.39.0/`、`--no-verify`、`--no-gpg-sign`、无条件 force push、提交密钥/`.env`。
 
 不改 `git config`。不 push，除非用户明确要求。

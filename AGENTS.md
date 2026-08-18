@@ -10,14 +10,14 @@ Rust 复兴 Laurent Constantin 的 **netwib + netwox + netwag 5.39.0** 能力全
 |----|--------|-----|----------|
 | 库 | netwib | 计划中的 `nz-net` | `dat/sys/net/pkt/shw` **能力**，不复制 C API |
 | CLI | netwox | `nz` | 223 个工具能力全覆盖 + **工具 0**（GUI 契约） |
-| GUI | netwag | 计划中的 `nz-gui` | lessons 工作流；**仅 native crate** |
+| GUI | netwag | 计划中的 `nz-gui` | lessons 工作流；**egui**，禁止 webview |
 
 依赖方向：库 → CLI → GUI。禁止在库能力未定义时堆工具特例。
 
 ## 闸门
 
-0. 骨架（本文件与 `doc/` `spec/` `skills/`）— 当前
-1. 从 HTML/源码抽详细文档
+0. 骨架（本文件与 `doc/` `spec/` `skills/`）
+1. 从 HTML/源码抽详细文档 — **当前**
 2. 写 `.cursor/skills/` 正文
 3. 按模板写 spec（先库，再工具族）
 4. crate + CLI 注册表 + 工具 0
@@ -37,15 +37,15 @@ Rust 复兴 Laurent Constantin 的 **netwib + netwox + netwag 5.39.0** 能力全
 
 - 非琐碎决策：问题 + 2～3 方案 + 优缺点 + 推荐；等确认再落盘
 - 一次任务 = 一个可验收完整功能（测试全绿、零 warning）
-- push 前先本地跑完整质量门；命令尽量与 CI 等价，至少覆盖 `cargo fmt --all -- --check`、`cargo clippy --all-targets --all-features -- -D warnings`、`cargo nextest run --all-features --no-tests warn`、`cargo deny check`、`typos`
+- 本地质量门以 **pre-commit** 为准。克隆后必须 `pre-commit install`；未装钩子禁止提交（禁止 `--no-verify`）。全量复跑用 `pre-commit run --all-files`。不要另写平行 sh 脚本。CI 是远端对照
 - 提交前用户 review（可多轮）；确认无误后才提交一次
-- 提交后若只改这一笔且尚未开始后续功能，发现问题可 `--amend`；功能集已完成或后面已有别的功能提交则必须新提交，不 amend
+- 提交后若只改这一笔且尚未开始后续功能，发现问题可 `--amend`；若该笔已 push 且 GitHub Actions 失败，修进同一笔后用 `git push --force-with-lease`。功能集已完成或后面已有别的功能提交则必须新提交，不 amend
 - `cargo build` / `cargo test` / `cargo clippy --all-targets -- -D warnings` 零告警
 - 嗅探/伪造/扫描仅本机、实验室或书面授权目标
 
 ## 禁止
 
-- 当前闸：写业务代码、加运行时依赖、实现任何工具或 GUI
+- **当前闸**：抽文档。禁止实现工具或 GUI、加运行时依赖
 - `git add netw-ib-ox-ag-5.39.0/`
 - 修改对照源；把 C 大段贴进 `doc/`
 - GUI 使用 Tauri / Wry / webview
@@ -60,9 +60,9 @@ Rust 复兴 Laurent Constantin 的 **netwib + netwox + netwag 5.39.0** 能力全
 ## 工程基础设施
 
 - **Workspace**：`crates/nz-net`（库）+ `crates/nz`（CLI）+ `crates/nz-gui`（GUI）
-- **CI**：GitHub Actions（`ci.yml` fmt/clippy/nextest/deny/typos/coverage，macOS + Linux 矩阵）
+- **CI**：GitHub Actions（`ci.yml` fmt/clippy/nextest/deny/typos/coverage，macOS + Linux 矩阵）；Dependabot 每周扫 cargo 与 Actions
 - **Release**：git-cliff changelog + GitHub Release（tag `v*` 触发）；release-plz 手动触发 bump PR
-- **本地钩子**：pre-commit（fmt → clippy → nextest → deny → typos）
+- **本地钩子**：pre-commit 是唯一本地质量门（fmt → clippy → nextest → deny → typos；每次 commit 全跑）
 - **供应链**：cargo-deny（许可证 + 安全公告 + 来源审计）
 - **覆盖率**：cargo-llvm-cov → Codecov
 - **格式**：rustfmt（stable 配置）
@@ -73,3 +73,4 @@ Rust 复兴 Laurent Constantin 的 **netwib + netwox + netwag 5.39.0** 能力全
 - `doc/` 对照摘录与缺口
 - `spec/` 任务说明（库 / 工具 / GUI）
 - `skills/README.md` 技能草案（正文确认后放 `.cursor/skills/`）
+- `README.md` 仓库首页（英文默认）；`README.zh.md` 中文。两份改动必须同步

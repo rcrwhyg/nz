@@ -11,9 +11,9 @@
 | [architecture.md](architecture.md) | 三层对照与源码/HTML 指针 |
 | [inventory.md](inventory.md) | netwib 模块、223 工具、netwag 功能面 |
 | [gaps.md](gaps.md) | 动手写代码前仍待拍板的缺口 |
-| [netwib/](netwib/README.md) | 第 1 闸：库能力摘录 |
-| [netwox/](netwox/README.md) | 第 1 闸：工具/协议摘录 |
-| [netwag/](netwag/README.md) | 第 1 闸：GUI 工作流摘录 |
+| [netwib/](netwib/README.md) | 库能力摘录（进行中） |
+| [netwox/](netwox/README.md) | 工具/协议摘录（进行中） |
+| [netwag/](netwag/README.md) | GUI 工作流摘录 |
 
 ## 抽取规则（第 1 闸才执行）
 

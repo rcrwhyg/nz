@@ -8,11 +8,16 @@ Thank you for your interest in contributing!
 2. Install dev tools:
    ```bash
    cargo install cargo-nextest cargo-deny typos-cli git-cliff cargo-llvm-cov
-   pip install pre-commit
+   brew install pre-commit
    pre-commit install
    ```
 3. Build: `cargo build`
-4. Test: `cargo nextest run --all-features --no-tests warn`
+
+`pre-commit install` writes `.git/hooks/pre-commit` (the `.git` directory is hidden in most editors). Confirm with:
+
+```bash
+ls -l .git/hooks/pre-commit
+```
 
 ## Commit Convention
 
@@ -35,9 +40,15 @@ Before submitting a PR, ensure:
 - `cargo deny check` passes
 - `typos` finds no issues
 
-For changes headed to GitHub, run the full local gate before push so it matches CI as closely as practical.
+`pre-commit install` makes `git commit` run that gate. To run it without committing:
 
-Or simply run `pre-commit run --all-files`.
+```bash
+pre-commit run --all-files
+```
+
+GitHub Actions is the remote counterpart. Do not add a second local shell script that duplicates these hooks.
+
+If Actions fails after a local commit already passed hooks, fix the cause and `git commit --amend` into that same commit. If it was already pushed, update the remote with `git push --force-with-lease` only—never `--force`. Do not amend after later feature commits exist.
 
 ## License
 
