@@ -4,3 +4,7 @@ extend-exclude = [
     "CHANGELOG.md",
     "target/",
 ]
+
+[default.extend-words]
+shw = "shw"
+predictible = "predictible"
