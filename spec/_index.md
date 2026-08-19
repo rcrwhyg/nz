@@ -13,7 +13,7 @@
 3. 信息：1–6、12–13、169、187、213、218 — draft 见 [netwox/info/README.md](netwox/info/README.md)
 4. 非网络/文件：21–31、127–129、186、191、216、219–221、190 — draft 见 [netwox/files/README.md](netwox/files/README.md)
 5. record：14–20 — draft 见 [netwox/record/README.md](netwox/record/README.md)
-6. sniff：7–11
+6. sniff：7–11 — draft 见 [netwox/sniff/README.md](netwox/sniff/README.md)
 7. spoof：32–48、140–147、192
 8. ping / traceroute / scan：49–72、148–151、214–215
 9. 通用 client/server/relay/perf/bridge：87–92、110、155–158、183–185
