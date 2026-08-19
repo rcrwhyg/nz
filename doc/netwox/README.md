@@ -13,5 +13,6 @@
 - [record.md](record.md) — record/pcap 14–20
 - [sniff.md](sniff.md) — sniff 7–11
 - [spoof.md](spoof.md) — spoof 32–48、140–147、192
+- [diagnose.md](diagnose.md) — ping / traceroute / scan 49–72、148–151、214–215
 
 工具全表见 [../inventory.md](../inventory.md)。工具 spec 模板：`spec/TEMPLATE-tool.md`。
