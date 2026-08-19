@@ -23,5 +23,5 @@
 - 原 `test/netwibtest`：**分批整理成测试对照表**（随模块实现进度提取，放 `doc/netwib/test-matrix.md`，确保不遗漏边界用例）
 - Cargo edition：以根 `Cargo.toml` workspace 为准，edition 2024
 - crate 发布名：产品/CLI 仍叫 `nz`；若上 crates.io 再另取包名（现有 `nz` crate 已被占用）
-- GitHub：仓库 `rcrwhyg/nz`，默认分支 `main`；release-plz 仅手动触发
+- GitHub：仓库 `rcrwhyg/nz`，默认分支 `main`；release-plz 仅手动触发。第 1–3 闸确认提交后即 push
 - 本地质量门：**pre-commit 唯一入口**（commit 钩子 + `pre-commit run --all-files`）；GitHub Actions 做远端对照，不另写平行 sh

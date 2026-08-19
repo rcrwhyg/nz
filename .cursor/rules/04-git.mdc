@@ -34,4 +34,6 @@ GitHub Actions 失败（本地钩子已过、远端未过）：
 
 禁止：`git add netw-ib-ox-ag-5.39.0/`、`--no-verify`、`--no-gpg-sign`、无条件 force push、提交密钥/`.env`。
 
-不改 `git config`。不 push，除非用户明确要求。
+不改 `git config`。
+
+**push：** 第 1–3 闸（抽文档 / skills / spec、尚未写业务代码）用户确认提交后即 `git push origin main`。进入第 4 闸（crate/CLI 实现）后再改回「用户明确要求才 push」。
