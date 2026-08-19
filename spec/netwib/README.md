@@ -10,8 +10,9 @@
 | [dat.md](dat.md) | buf、编解码、Internet checksum |
 | [net-addr.md](net-addr.md) | IP/Eth/port 与集合语法 |
 | [net-device.md](net-device.md) | 网卡列举（测试用假后端） |
+| [net-conf.md](net-conf.md) | 本机 IP/ARP/路由与到达（假后端） |
 | [pkt.md](pkt.md) | 分层编解码、conv、分片 |
 
-尚未写（后续相位）：sys/record、net conf/sock/sniff/spoof、shw、dat regexp/TLV。CLI 注册表与工具 0 见 [../netwox/README.md](../netwox/README.md)。
+尚未写（后续相位）：sys/record、net sock/sniff/spoof、shw、dat regexp/TLV。CLI 见 [../netwox/README.md](../netwox/README.md)。
 
 状态均为 `draft`，用户批准后改 `approved`。
