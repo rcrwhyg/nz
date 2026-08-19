@@ -15,7 +15,7 @@
 5. record：14–20 — draft 见 [netwox/record/README.md](netwox/record/README.md)
 6. sniff：7–11 — draft 见 [netwox/sniff/README.md](netwox/sniff/README.md)
 7. spoof：32–48、140–147、192 — draft 见 [netwox/spoof/README.md](netwox/spoof/README.md)
-8. ping / traceroute / scan：49–72、148–151、214–215
+8. ping / traceroute / scan：49–72、148–151、214–215 — draft 见 [netwox/diagnose/README.md](netwox/diagnose/README.md)
 9. 通用 client/server/relay/perf/bridge：87–92、110、155–158、183–185
 10. 应用协议按族（一族一闸，族内仍一工具一提交）：DNS、HTTP、FTP、TFTP、DHCP、SMTP、SNMP、SMB、TELNET、SYSLOG、IRC、NNTP、IDENT、WHOIS、SNTP
 11. remadm：93–96、126

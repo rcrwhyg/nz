@@ -2,7 +2,7 @@
 
 模板：[TEMPLATE-tool.md](../TEMPLATE-tool.md)。对照 [doc/inventory.md](../../doc/inventory.md)。
 
-相位 2–7 已起草：
+相位 2–8 已起草：
 
 | 文件 | 范围 |
 |------|------|
@@ -13,7 +13,8 @@
 | [record/](record/README.md) | record 14–20 |
 | [sniff/](sniff/README.md) | sniff 7–11 |
 | [spoof/](spoof/README.md) | spoof 32–48、140–147、192 |
+| [diagnose/](diagnose/README.md) | ping / traceroute / scan 49–72、148–151、214–215 |
 
-其后按 `_index.md` 写下一族（ping / traceroute / scan），不要一次 223 份。
+其后按 `_index.md` 写下一族（通用 client/server/relay），不要一次 223 份。
 
 状态均为 `draft`，用户批准后改 `approved`。
