@@ -12,5 +12,6 @@
 - [files.md](files.md) — 非网络/文件 21–31、127–129、186、190、191、216、219–221
 - [record.md](record.md) — record/pcap 14–20
 - [sniff.md](sniff.md) — sniff 7–11
+- [spoof.md](spoof.md) — spoof 32–48、140–147、192
 
 工具全表见 [../inventory.md](../inventory.md)。工具 spec 模板：`spec/TEMPLATE-tool.md`。
