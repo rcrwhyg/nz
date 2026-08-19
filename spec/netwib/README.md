@@ -12,6 +12,6 @@
 | [net-device.md](net-device.md) | 网卡列举（测试用假后端） |
 | [pkt.md](pkt.md) | 分层编解码、conv、分片 |
 
-尚未写（后续相位）：sys/record、net conf/sock/sniff/spoof、shw、dat regexp/TLV。相位 2 起才写 CLI 注册表与工具 0。
+尚未写（后续相位）：sys/record、net conf/sock/sniff/spoof、shw、dat regexp/TLV。CLI 注册表与工具 0 见 [../netwox/README.md](../netwox/README.md)。
 
 状态均为 `draft`，用户批准后改 `approved`。
