@@ -2,7 +2,7 @@
 
 模板：[TEMPLATE-lib.md](../TEMPLATE-lib.md)。对照 [doc/netwib/modules.md](../../doc/netwib/modules.md)。
 
-相位 1（库骨架）已起草；相位 4 补了哈希；相位 5–7 补了 record、sniff 与 spoof：
+相位 1（库骨架）已起草；相位 4 补了哈希；相位 5–9 补了 record、sniff、spoof 与 sock：
 
 | 文件 | 范围 |
 |------|------|
@@ -16,7 +16,8 @@
 | [record.md](record.md) | record/pcap 读写（相位 5） |
 | [net-sniff.md](net-sniff.md) | 嗅探通道与假后端（相位 6） |
 | [net-spoof.md](net-spoof.md) | 伪造发送通道与假后端（相位 7） |
+| [net-sock.md](net-sock.md) | TCP/UDP 套接字与虚拟 sockv（相位 9） |
 
-尚未写（后续相位）：net sock、shw、dat regexp/TLV。CLI 见 [../netwox/README.md](../netwox/README.md)。
+尚未写（后续相位）：shw、dat regexp/TLV。CLI 见 [../netwox/README.md](../netwox/README.md)。
 
 状态均为 `draft`，用户批准后改 `approved`。
