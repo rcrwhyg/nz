@@ -2,7 +2,7 @@
 
 模板：[TEMPLATE-lib.md](../TEMPLATE-lib.md)。对照 [doc/netwib/modules.md](../../doc/netwib/modules.md)。
 
-相位 1（库骨架）已起草；相位 4 补了哈希；相位 5–10 补了 record、sniff、spoof、sock 与 DNS：
+相位 1（库骨架）已起草；相位 4 补了哈希；相位 5–10 补了 record、sniff、spoof、sock、DNS 与 HTTP/HTML/spider：
 
 | 文件 | 范围 |
 |------|------|
@@ -18,6 +18,9 @@
 | [net-spoof.md](net-spoof.md) | 伪造发送通道与假后端（相位 7） |
 | [net-sock.md](net-sock.md) | TCP/UDP 套接字与虚拟 sockv（相位 9） |
 | [pkt-dns.md](pkt-dns.md) | DNS 编解码、查询与固定应答（相位 10） |
+| [proto-http.md](proto-http.md) | HTTP 客户端/服务端与 URL 下载（相位 10） |
+| [proto-html.md](proto-html.md) | 离线 HTML/URL 处理（相位 10） |
+| [proto-spider.md](proto-spider.md) | Web spider 与本地映射（相位 10） |
 
 尚未写（后续相位）：shw、dat regexp/TLV。CLI 见 [../netwox/README.md](../netwox/README.md)。
 
