@@ -22,7 +22,15 @@
 | [smtp/](smtp/README.md) | SMTP 106、177、189、223 |
 | [snmp/](snmp/README.md) | SNMP 159–164 |
 | [smb/](smb/README.md) | SMB/CIFS 198–209、217 |
+| [telnet/](telnet/README.md) | TELNET 99、100、170 |
+| [syslog/](syslog/README.md) | SYSLOG 97、188 |
+| [irc/](irc/README.md) | IRC 152–154、178 |
+| [nntp/](nntp/README.md) | NNTP 107–109、172–173 |
+| [sntp/](sntp/README.md) | SNTP 180、181 |
+| [ident/](ident/README.md) | IDENT 193–195 |
+| [whois/](whois/README.md) | WHOIS 196、197 |
+| [remadm/](remadm/README.md) | remadm 93–96、126 |
 
-其后按 `_index.md` 写下一族（TELNET 等），不要一次 223 份。
+其后按 `_index.md` 写 GUI（相位 12），不要一次 223 份。
 
 状态均为 `draft`，用户批准后改 `approved`。
