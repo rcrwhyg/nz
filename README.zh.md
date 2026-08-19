@@ -15,7 +15,7 @@ Rust 复兴 Laurent Constantin 的 **netwib + netwox + netwag 5.39.0** 能力全
 | CLI | netwox | `nz` | 数字工具号 + 具名子命令（双模式） |
 | GUI | netwag | `nz-gui` | native **egui** 工作台，不用 webview |
 
-当前处于第 2 闸：编写 `.cursor/skills/` 正文。尚未实现工具。
+当前处于第 3 闸：按模板写 spec（先库能力）。尚未实现工具。
 
 `README.md`（英文，默认）与 `README.zh.md` 必须同步更新。
 

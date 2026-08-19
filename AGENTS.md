@@ -18,8 +18,8 @@ Rust 复兴 Laurent Constantin 的 **netwib + netwox + netwag 5.39.0** 能力全
 
 0. 骨架（本文件与 `doc/` `spec/` `skills/`）
 1. 从 HTML/源码抽详细文档
-2. 写 `.cursor/skills/` 正文 — **当前**
-3. 按模板写 spec（先库，再工具族）
+2. 写 `.cursor/skills/` 正文
+3. 按模板写 spec（先库，再工具族） — **当前**
 4. crate + CLI 注册表 + 工具 0
 5. 按族实现工具
 6. native GUI
@@ -45,7 +45,7 @@ Rust 复兴 Laurent Constantin 的 **netwib + netwox + netwag 5.39.0** 能力全
 
 ## 禁止
 
-- **当前闸**：skills 正文。禁止实现工具或 GUI、加运行时依赖
+- **当前闸**：写 spec。禁止实现工具或 GUI、加运行时依赖
 - `git add netw-ib-ox-ag-5.39.0/`
 - 修改对照源；把 C 大段贴进 `doc/`
 - GUI 使用 Tauri / Wry / webview

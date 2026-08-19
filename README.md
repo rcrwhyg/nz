@@ -15,7 +15,7 @@ License: [GPL-3.0-only](LICENSE)
 | CLI | netwox | `nz` | Numeric tool IDs plus named subcommands |
 | GUI | netwag | `nz-gui` | Native **egui** workbench, no webview |
 
-Current gate: agent skills (`.cursor/skills/`). Tools are not implemented yet.
+Current gate: library and tool specs (`spec/`). Tools are not implemented yet.
 
 Keep `README.md` (English, default) and `README.zh.md` in sync.
 
