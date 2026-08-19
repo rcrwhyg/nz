@@ -18,7 +18,8 @@
 | [dns/](dns/README.md) | DNS 102–105 |
 | [http/](http/README.md) | HTTP / URL / spider 118–125、133–139、136、175、182、210–212、222 |
 | [ftp/](ftp/README.md) | FTP / TFTP 111–117、168、174、165–167、176 |
+| [dhcp/](dhcp/README.md) | DHCP 171、179 |
 
-其后按 `_index.md` 写下一族（DHCP 等），不要一次 223 份。
+其后按 `_index.md` 写下一族（SMTP 等），不要一次 223 份。
 
 状态均为 `draft`，用户批准后改 `approved`。

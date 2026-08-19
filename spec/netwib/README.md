@@ -23,6 +23,7 @@
 | [proto-spider.md](proto-spider.md) | Web spider 与本地映射（相位 10） |
 | [proto-ftp.md](proto-ftp.md) | FTP 客户端/服务端（相位 10） |
 | [proto-tftp.md](proto-tftp.md) | TFTP 客户端/服务端（相位 10） |
+| [pkt-dhcp.md](pkt-dhcp.md) | DHCPv4 编解码与客户端状态机（相位 10） |
 
 尚未写（后续相位）：shw、dat regexp/TLV。CLI 见 [../netwox/README.md](../netwox/README.md)。
 
