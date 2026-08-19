@@ -38,7 +38,7 @@ Rust 复兴 Laurent Constantin 的 **netwib + netwox + netwag 5.39.0** 能力全
 - 非琐碎决策：问题 + 2～3 方案 + 优缺点 + 推荐；等确认再落盘
 - 一次任务 = 一个可验收完整功能（测试全绿、零 warning）
 - 本地质量门以 **pre-commit** 为准。克隆后必须 `pre-commit install`；未装钩子禁止提交（禁止 `--no-verify`）。全量复跑用 `pre-commit run --all-files`。不要另写平行 sh 脚本。CI 是远端对照
-- 提交前用户 review（可多轮）；确认无误后才提交一次。第 1–3 闸确认提交后即 push；第 4 闸起写代码后再问是否每笔都 push
+- 提交前用户 review（可多轮）；确认无误后才提交一次。第 1–3 闸只本地提交；文档阶段全部结束后、编码前统一 push；第 4 闸起写代码后再问是否每笔都 push
 - 提交后若只改这一笔且尚未开始后续功能，发现问题可 `--amend`；若该笔已 push 且 GitHub Actions 失败，修进同一笔后用 `git push --force-with-lease`。功能集已完成或后面已有别的功能提交则必须新提交，不 amend
 - `cargo build` / `cargo test` / `cargo clippy --all-targets -- -D warnings` 零告警
 - 嗅探/伪造/扫描仅本机、实验室或书面授权目标
