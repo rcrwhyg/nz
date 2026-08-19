@@ -15,7 +15,7 @@ License: [GPL-3.0-only](LICENSE)
 | CLI | netwox | `nz` | Numeric tool IDs plus named subcommands |
 | GUI | netwag | `nz-gui` | Native **egui** workbench, no webview |
 
-Current gate: extract detailed docs from the reference tree. Tools are not implemented yet.
+Current gate: agent skills (`.cursor/skills/`). Tools are not implemented yet.
 
 Keep `README.md` (English, default) and `README.zh.md` in sync.
 
@@ -42,3 +42,4 @@ Sniffing, spoofing, and scanning are only for this machine, a lab, or a written-
 - [SECURITY.md](SECURITY.md) — vulnerability reporting
 - [doc/](doc/README.md) — extracted reference notes
 - [spec/](spec/README.md) — task specs
+- [skills/](skills/README.md) — agent skill index

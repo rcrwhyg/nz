@@ -17,8 +17,8 @@ Rust 复兴 Laurent Constantin 的 **netwib + netwox + netwag 5.39.0** 能力全
 ## 闸门
 
 0. 骨架（本文件与 `doc/` `spec/` `skills/`）
-1. 从 HTML/源码抽详细文档 — **当前**
-2. 写 `.cursor/skills/` 正文
+1. 从 HTML/源码抽详细文档
+2. 写 `.cursor/skills/` 正文 — **当前**
 3. 按模板写 spec（先库，再工具族）
 4. crate + CLI 注册表 + 工具 0
 5. 按族实现工具
@@ -45,7 +45,7 @@ Rust 复兴 Laurent Constantin 的 **netwib + netwox + netwag 5.39.0** 能力全
 
 ## 禁止
 
-- **当前闸**：抽文档。禁止实现工具或 GUI、加运行时依赖
+- **当前闸**：skills 正文。禁止实现工具或 GUI、加运行时依赖
 - `git add netw-ib-ox-ag-5.39.0/`
 - 修改对照源；把 C 大段贴进 `doc/`
 - GUI 使用 Tauri / Wry / webview
@@ -72,5 +72,5 @@ Rust 复兴 Laurent Constantin 的 **netwib + netwox + netwag 5.39.0** 能力全
 
 - `doc/` 对照摘录与缺口
 - `spec/` 任务说明（库 / 工具 / GUI）
-- `skills/README.md` 技能草案（正文确认后放 `.cursor/skills/`）
+- `skills/README.md` 技能索引；正文在 `.cursor/skills/`
 - `README.md` 仓库首页（英文默认）；`README.zh.md` 中文。两份改动必须同步
