@@ -14,5 +14,6 @@
 - [sniff.md](sniff.md) — sniff 7–11
 - [spoof.md](spoof.md) — spoof 32–48、140–147、192
 - [diagnose.md](diagnose.md) — ping / traceroute / scan 49–72、148–151、214–215
+- [transport.md](transport.md) — client/server/relay/perf/bridge 87–92、110、155–158、183–185
 
 工具全表见 [../inventory.md](../inventory.md)。工具 spec 模板：`spec/TEMPLATE-tool.md`。
