@@ -20,7 +20,9 @@
 | [ftp/](ftp/README.md) | FTP / TFTP 111–117、168、174、165–167、176 |
 | [dhcp/](dhcp/README.md) | DHCP 171、179 |
 | [smtp/](smtp/README.md) | SMTP 106、177、189、223 |
+| [snmp/](snmp/README.md) | SNMP 159–164 |
+| [smb/](smb/README.md) | SMB/CIFS 198–209、217 |
 
-其后按 `_index.md` 写下一族（SNMP 等），不要一次 223 份。
+其后按 `_index.md` 写下一族（TELNET 等），不要一次 223 份。
 
 状态均为 `draft`，用户批准后改 `approved`。
