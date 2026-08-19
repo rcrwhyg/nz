@@ -19,7 +19,7 @@
 9. 通用 client/server/relay/perf/bridge：87–92、110、155–158、183–185 — draft 见 [netwox/transport/README.md](netwox/transport/README.md)
 10. 应用协议按族（一族一闸，族内仍一工具一提交）：DNS — draft 见 [netwox/dns/README.md](netwox/dns/README.md)；HTTP — draft 见 [netwox/http/README.md](netwox/http/README.md)；FTP/TFTP — draft 见 [netwox/ftp/README.md](netwox/ftp/README.md)；DHCP — draft 见 [netwox/dhcp/README.md](netwox/dhcp/README.md)；SMTP — draft 见 [netwox/smtp/README.md](netwox/smtp/README.md)；SNMP — draft 见 [netwox/snmp/README.md](netwox/snmp/README.md)；SMB — draft 见 [netwox/smb/README.md](netwox/smb/README.md)；TELNET — draft 见 [netwox/telnet/README.md](netwox/telnet/README.md)；SYSLOG — draft 见 [netwox/syslog/README.md](netwox/syslog/README.md)；IRC — draft 见 [netwox/irc/README.md](netwox/irc/README.md)；NNTP — draft 见 [netwox/nntp/README.md](netwox/nntp/README.md)；SNTP — draft 见 [netwox/sntp/README.md](netwox/sntp/README.md)；IDENT — draft 见 [netwox/ident/README.md](netwox/ident/README.md)；WHOIS — draft 见 [netwox/whois/README.md](netwox/whois/README.md)
 11. remadm：93–96、126 — draft 见 [netwox/remadm/README.md](netwox/remadm/README.md)
-12. GUI：Search / Form / Run / History / Clipboard / Local_info / Remote_info（native crate）
+12. GUI：Search / Form / Run / History / Clipboard / Local_info / Remote_info（native crate）— draft 见 [netwag/README.md](netwag/README.md)
 13. **后置** netaudit + brute：73–86、98、101、130–132（单独批准）
 14. `spec/modern/`：TLS、QUIC、HTTP/2/3、DNSSEC 等（对齐完成前不混进旧工具语义）
 
