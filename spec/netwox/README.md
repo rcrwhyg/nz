@@ -19,7 +19,8 @@
 | [http/](http/README.md) | HTTP / URL / spider 118–125、133–139、136、175、182、210–212、222 |
 | [ftp/](ftp/README.md) | FTP / TFTP 111–117、168、174、165–167、176 |
 | [dhcp/](dhcp/README.md) | DHCP 171、179 |
+| [smtp/](smtp/README.md) | SMTP 106、177、189、223 |
 
-其后按 `_index.md` 写下一族（SMTP 等），不要一次 223 份。
+其后按 `_index.md` 写下一族（SNMP 等），不要一次 223 份。
 
 状态均为 `draft`，用户批准后改 `approved`。
