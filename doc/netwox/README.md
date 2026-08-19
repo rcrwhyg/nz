@@ -11,5 +11,6 @@
 - [info.md](info.md) — 信息/本地工具 1–6、12–13、169、187、213、218
 - [files.md](files.md) — 非网络/文件 21–31、127–129、186、190、191、216、219–221
 - [record.md](record.md) — record/pcap 14–20
+- [sniff.md](sniff.md) — sniff 7–11
 
 工具全表见 [../inventory.md](../inventory.md)。工具 spec 模板：`spec/TEMPLATE-tool.md`。
