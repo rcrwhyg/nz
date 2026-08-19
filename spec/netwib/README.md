@@ -2,7 +2,7 @@
 
 模板：[TEMPLATE-lib.md](../TEMPLATE-lib.md)。对照 [doc/netwib/modules.md](../../doc/netwib/modules.md)。
 
-相位 1（库骨架）已起草：
+相位 1（库骨架）已起草；相位 4 补了哈希：
 
 | 文件 | 范围 |
 |------|------|
@@ -12,6 +12,7 @@
 | [net-device.md](net-device.md) | 网卡列举（测试用假后端） |
 | [net-conf.md](net-conf.md) | 本机 IP/ARP/路由与到达（假后端） |
 | [pkt.md](pkt.md) | 分层编解码、conv、分片 |
+| [hash.md](hash.md) | 文件/字节摘要（md2–sha512；相位 4） |
 
 尚未写（后续相位）：sys/record、net sock/sniff/spoof、shw、dat regexp/TLV。CLI 见 [../netwox/README.md](../netwox/README.md)。
 

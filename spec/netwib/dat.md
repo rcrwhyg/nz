@@ -23,7 +23,7 @@
 - ring/hash/array 独立类型（用标准库）
 - regexp、TLV：后续 dat spec
 - quoted 编解码（C 主要用于参数解析，归 CLI）
-- 不在本 spec 实现文件哈希算法（工具 22/219 另写）
+- 不在本 spec 实现文件哈希算法（见 [hash.md](hash.md)）
 
 ## 验收
 
