@@ -15,5 +15,11 @@
 - [spoof.md](spoof.md) — spoof 32–48、140–147、192
 - [diagnose.md](diagnose.md) — ping / traceroute / scan 49–72、148–151、214–215
 - [transport.md](transport.md) — client/server/relay/perf/bridge 87–92、110、155–158、183–185
+- [dns.md](dns.md) — DNS 102–105
+- [http.md](http.md) — HTTP / URL / spider
+- [ftp.md](ftp.md) — FTP / TFTP
+- [smb.md](smb.md) — SMB/CIFS 198–209、217
+- [proto-misc.md](proto-misc.md) — SYSLOG、TELNET、SMTP、NNTP、IRC、SNMP、DHCP、SNTP、IDENT、WHOIS
+- [remadm.md](remadm.md) — remadm 93–96、126
 
 工具全表见 [../inventory.md](../inventory.md)。工具 spec 模板：`spec/TEMPLATE-tool.md`。
