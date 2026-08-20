@@ -56,8 +56,8 @@ jobs:
           components: llvm-tools-preview
       - uses: Swatinem/rust-cache@v2
       - uses: taiki-e/install-action@cargo-llvm-cov
-      - name: Coverage
-        run: cargo llvm-cov --all-features --lcov --output-path lcov.info
+      - name: Coverage (nz-net line ≥95%)
+        run: cargo llvm-cov -p nz-net --all-features --summary-only --fail-under-lines 95 --lcov --output-path lcov.info
       - name: Upload coverage
         uses: codecov/codecov-action@v7
         with:

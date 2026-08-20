@@ -27,9 +27,8 @@ Requires Rust stable (see `rust-toolchain.toml`).
 cargo build
 pre-commit install
 pre-commit run --all-files
-rustup component add llvm-tools-preview
-cargo binstall cargo-llvm-cov -y
-cargo llvm-cov -p nz-net --summary-only --fail-under-lines 95
+# 可选：rustup component add llvm-tools-preview && cargo binstall cargo-llvm-cov -y
+# 可选：cargo llvm-cov -p nz-net --summary-only --fail-under-lines 95
 ```
 
 The local `netw-ib-ox-ag-5.39.0/` tree is read-only and gitignored.

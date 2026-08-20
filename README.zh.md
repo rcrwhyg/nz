@@ -27,9 +27,8 @@ Rust 复兴 Laurent Constantin 的 **netwib + netwox + netwag 5.39.0** 能力全
 cargo build
 pre-commit install
 pre-commit run --all-files
-rustup component add llvm-tools-preview
-cargo binstall cargo-llvm-cov -y
-cargo llvm-cov -p nz-net --summary-only --fail-under-lines 95
+# 可选：rustup component add llvm-tools-preview && cargo binstall cargo-llvm-cov -y
+# 可选：cargo llvm-cov -p nz-net --summary-only --fail-under-lines 95
 ```
 
 对照源 `netw-ib-ox-ag-5.39.0/` 仅本地只读，不进 git。

@@ -23,4 +23,4 @@ alwaysApply: true
 
 ## 测试
 
-该单元 spec 每条验收都有自动化测试。库代码行覆盖 ≥ 95%；达不到则在对应 spec 写明缺口与原因。提交前对改动的库 crate 跑 `cargo llvm-cov -p <crate> --fail-under-lines 95`（需 `cargo-llvm-cov` + `llvm-tools-preview`）。禁止为冲覆盖率改生产行为；禁止无断言空测试。
+该单元 spec 每条验收都有自动化测试。库代码行覆盖 ≥ 95%；达不到则在对应 spec 写明缺口与原因。**CI 强制**（现阶段 `nz-net`）；本地 `cargo llvm-cov` 可选，不进 pre-commit。禁止为冲覆盖率改生产行为；禁止无断言空测试。

@@ -65,7 +65,7 @@ Rust 复兴 Laurent Constantin 的 **netwib + netwox + netwag 5.39.0** 能力全
 - **Release**：git-cliff changelog + GitHub Release（tag `v*` 触发）；release-plz 手动触发 bump PR
 - **本地钩子**：pre-commit 是唯一本地质量门（fmt → clippy → nextest → deny → typos；每次 commit 全跑）
 - **供应链**：cargo-deny（许可证 + 安全公告 + 来源审计）
-- **覆盖率**：库任务提交前 `cargo llvm-cov -p <crate> --fail-under-lines 95`（`cargo-llvm-cov` + `llvm-tools-preview`）；CI 用 cargo-llvm-cov → Codecov
+- **覆盖率**：CI `coverage` job 对 `nz-net` 强制 `--fail-under-lines 95`（工具 0 / GUI 完成后按 crate 扩展）；Codecov 仅报告。本地 `cargo llvm-cov` 可选，不进 pre-commit
 - **格式**：rustfmt（stable 配置）
 - **Commit 规范**：Conventional Commits（`feat/fix/docs/refactor/test/ci`）
 
