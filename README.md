@@ -15,7 +15,7 @@ License: [GPL-3.0-only](LICENSE)
 | CLI | netwox | `nz` | Numeric tool IDs plus named subcommands |
 | GUI | netwag | `nz-gui` | Native **egui** workbench, no webview |
 
-Current gate: library and tool specs (`spec/`). Tools are not implemented yet.
+Current gate: crate skeleton, CLI registry, and tool 0. User tools 1–223 and the GUI are not implemented yet.
 
 Keep `README.md` (English, default) and `README.zh.md` in sync.
 
@@ -27,6 +27,9 @@ Requires Rust stable (see `rust-toolchain.toml`).
 cargo build
 pre-commit install
 pre-commit run --all-files
+rustup component add llvm-tools-preview
+cargo binstall cargo-llvm-cov -y
+cargo llvm-cov -p nz-net --summary-only --fail-under-lines 95
 ```
 
 The local `netw-ib-ox-ag-5.39.0/` tree is read-only and gitignored.

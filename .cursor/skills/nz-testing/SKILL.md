@@ -16,6 +16,14 @@ description: >-
 
 库代码（编解码、校验和、参数解析、工具 0 协议）：行覆盖目标 ≥ 95%。达不到则在 spec 写明缺口与原因。
 
+库任务提交前本地量覆盖（与 CI 一致）：
+
+```bash
+rustup component add llvm-tools-preview
+cargo binstall cargo-llvm-cov -y   # 未安装时
+cargo llvm-cov -p nz-net --summary-only --fail-under-lines 95
+```
+
 ## 特权 / 真网
 
 默认**不打真网卡**。用：
@@ -44,6 +52,7 @@ CI 不依赖 root，不对公网。嗅探/伪造/扫描仅本机、实验室或�
 ```bash
 cargo test
 cargo clippy --all-targets -- -D warnings
+cargo llvm-cov -p <crate> --summary-only --fail-under-lines 95
 ```
 
 本地质量门是 pre-commit（已 `pre-commit install`）。不要另写平行 sh 脚本。

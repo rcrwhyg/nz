@@ -11,6 +11,9 @@ repository = "https://github.com/rcrwhyg/nz"
 [workspace.lints.rust]
 unsafe_code = "forbid"
 
+[workspace.dependencies]
+thiserror = "2.0.20"
+
 [workspace.lints.clippy]
 all = { level = "deny", priority = -1 }
 pedantic = { level = "warn", priority = -1 }

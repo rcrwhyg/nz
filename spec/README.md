@@ -13,4 +13,4 @@
 | [netwag/](netwag/README.md) | GUI 工作流 Search/Form/Run/History/Clipboard/Local_info/Remote_info（相位 12，draft） |
 | [netaudit/_deferred.md](netaudit/_deferred.md) | 后置审计/暴力破解 |
 
-复制模板到族目录后填写，例如 `spec/netwib/err.md`、`spec/netwox/info/001.md`。当前闸按 `_index.md` 相位填写，不要一次写 223 份。
+复制模板到族目录后填写，例如 `spec/netwib/err.md`、`spec/netwox/info/001.md`。第 4 闸按 `_index.md` 相位 1–2 实现，不要一次做整族工具。

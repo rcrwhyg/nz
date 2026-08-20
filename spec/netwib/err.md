@@ -2,7 +2,7 @@
 
 - 模块：err
 - 对照：`netwib-src/src/netwib/err.h`（HTML 无独立 err 节）
-- 状态：draft
+- 状态：implemented
 
 ## 能力
 
@@ -21,7 +21,7 @@
 
 ## Rust 形状
 
-`nz-net` 内 `Error` + `Result`。用枚举表达分区与常见变体（数据结束、参数非法、未实现），`Display` 给人类可读串。禁止 `netwib_*` 符号。
+`nz-net` 内 `Error` + `Result`。用枚举表达分区与常见变体（数据结束、参数非法、未实现），`Display` 给人类可读串。派生使用已批准的 `thiserror`。禁止 `netwib_*` 符号。
 
 ## 非目标
 
@@ -36,7 +36,7 @@
 
 ## 覆盖率
 
-库代码目标 ≥ 95%。缺口与理由：（实现时填）
+库代码目标 ≥ 95%。本地 `cargo llvm-cov -p nz-net --fail-under-lines 95` 实测 100% 行覆盖（2026-08-20）。
 
 ## 依赖
 

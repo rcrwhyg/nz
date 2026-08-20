@@ -9,6 +9,16 @@ alwaysApply: true
 
 库代码（编解码、校验和、参数解析、工具 0 协议）：行覆盖目标 ≥ 95%。达不到则在 spec 写明缺口与原因。
 
+库任务提交前必须本地量覆盖率（与 CI 同工具链）：
+
+```bash
+rustup component add llvm-tools-preview   # 首次
+cargo binstall cargo-llvm-cov -y          # 未安装时
+cargo llvm-cov -p <crate> --summary-only --fail-under-lines 95
+```
+
+整 workspace 可选：`cargo llvm-cov --all-features --summary-only --fail-under-lines 95`。
+
 特权/实时网络：默认不打真网卡。用 pcap/record 回放、用户态假接口、或 `privileged-tests` feature。CI 不依赖 root，不对公网。
 
 GUI：测工作流与工具 0 契约，不以像素截图为主验收。

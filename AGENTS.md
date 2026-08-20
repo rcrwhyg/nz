@@ -19,8 +19,8 @@ Rust 复兴 Laurent Constantin 的 **netwib + netwox + netwag 5.39.0** 能力全
 0. 骨架（本文件与 `doc/` `spec/` `skills/`）
 1. 从 HTML/源码抽详细文档
 2. 写 `.cursor/skills/` 正文
-3. 按模板写 spec（先库，再工具族） — **当前**
-4. crate + CLI 注册表 + 工具 0
+3. 按模板写 spec（先库，再工具族）
+4. crate + CLI 注册表 + 工具 0 — **当前**
 5. 按族实现工具
 6. native GUI
 
@@ -42,10 +42,11 @@ Rust 复兴 Laurent Constantin 的 **netwib + netwox + netwag 5.39.0** 能力全
 - 提交后若只改这一笔且尚未开始后续功能，发现问题可 `--amend`；若该笔已 push 且 GitHub Actions 失败，修进同一笔后用 `git push --force-with-lease`。功能集已完成或后面已有别的功能提交则必须新提交，不 amend
 - `cargo build` / `cargo test` / `cargo clippy --all-targets -- -D warnings` 零告警
 - 嗅探/伪造/扫描仅本机、实验室或书面授权目标
+- 编码标准见 `.cursor/rules/06-coding-standards.mdc`：见名知意、完整注释、合理拆分、优秀 crate 先商量、覆盖率守住
 
 ## 禁止
 
-- **当前闸**：写 spec。禁止实现工具或 GUI、加运行时依赖
+- **当前闸**：crate + CLI 注册表 + 工具 0。禁止实现用户工具 1–223 业务、GUI、后置审计；运行时依赖须先商量再引入
 - `git add netw-ib-ox-ag-5.39.0/`
 - 修改对照源；把 C 大段贴进 `doc/`
 - GUI 使用 Tauri / Wry / webview
@@ -64,7 +65,7 @@ Rust 复兴 Laurent Constantin 的 **netwib + netwox + netwag 5.39.0** 能力全
 - **Release**：git-cliff changelog + GitHub Release（tag `v*` 触发）；release-plz 手动触发 bump PR
 - **本地钩子**：pre-commit 是唯一本地质量门（fmt → clippy → nextest → deny → typos；每次 commit 全跑）
 - **供应链**：cargo-deny（许可证 + 安全公告 + 来源审计）
-- **覆盖率**：cargo-llvm-cov → Codecov
+- **覆盖率**：库任务提交前 `cargo llvm-cov -p <crate> --fail-under-lines 95`（`cargo-llvm-cov` + `llvm-tools-preview`）；CI 用 cargo-llvm-cov → Codecov
 - **格式**：rustfmt（stable 配置）
 - **Commit 规范**：Conventional Commits（`feat/fix/docs/refactor/test/ci`）
 
