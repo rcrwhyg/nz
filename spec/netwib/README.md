@@ -6,8 +6,8 @@
 
 | 文件 | 范围 |
 |------|------|
-| [err.md](err.md) | 错误分区与 `Result` |
-| [dat.md](dat.md) | buf、编解码、Internet checksum |
+| [err.md](err.md) | 错误分区与 `Result` — **implemented** |
+| [dat.md](dat.md) | buf、编解码、Internet checksum — **implemented** |
 | [net-addr.md](net-addr.md) | IP/Eth/port 与集合语法 |
 | [net-device.md](net-device.md) | 网卡列举（测试用假后端） |
 | [net-conf.md](net-conf.md) | 本机 IP/ARP/路由与到达（假后端） |

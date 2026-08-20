@@ -2,7 +2,7 @@
 
 - 模块：dat 子集（buf、编解码、checksum）
 - 对照：`netwib-doc_html/netwib/dat.html` + `dat/{buf,bufenc,bufdec,checksum}.h`
-- 状态：draft
+- 状态：implemented
 
 ## 能力
 
@@ -36,7 +36,7 @@
 
 ## 覆盖率
 
-库代码目标 ≥ 95%。缺口与理由：（实现时填；wrap/array 若分期，在本 spec 列出未做别名）
+库代码目标 ≥ 95%。CI `-p nz-net --fail-under-lines 95` 强制；wrap 折行为基础实现（列宽 76），与 netwib 像素级差异若有则在工具 12 验收时再对齐。
 
 ## 依赖
 
