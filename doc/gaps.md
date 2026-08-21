@@ -4,7 +4,7 @@
 
 ## 待拍板
 
-（当前无待拍板事项。crates.io 包名若将来发布，与 CLI 名 `nz` 分开处理。）
+- crates.io 包名若将来发布，与 CLI 名 `nz` 分开处理。
 
 ## 已关闭
 
@@ -19,7 +19,8 @@
 - native GUI crate：**egui**（即时模式、生态成熟、LLM 友好；GPUI 因上游暂停对外维护而排除）
 - CLI 调用方式：**双模式**（`nz 49` 数字兼容 + `nz ping-icmp` 命名，维护静态映射表）
 - 目标平台：Tier 1 = macOS aarch64 + Linux x86_64；Tier 2 = Windows + FreeBSD（不阻塞提交）
-- workspace 切分：**现在就拆**（`nz-net` 库 + `nz` CLI + `nz-gui`，骨架阶段建好结构）
+- workspace 切分：**现在就拆**（`nz-net` 库 + `nz` CLI + `nz-gui`，骨架阶段建好结构）；参数解析另增 **`nz-arg`**（自研、对齐 toolarg，非 clap 主路径）
+- 工具参数解析：**自研 `nz-arg` crate**（方案 A；MVP 含长名前缀 / argfile / MORE；`--kbd`/RADIO/Generate 后置）
 - 原 `test/netwibtest`：**分批整理成测试对照表**（随模块实现进度提取，放 `doc/netwib/test-matrix.md`，确保不遗漏边界用例）
 - Cargo edition：以根 `Cargo.toml` workspace 为准，edition 2024
 - crate 发布名：产品/CLI 仍叫 `nz`；若上 crates.io 再另取包名（现有 `nz` crate 已被占用）

@@ -12,10 +12,11 @@ Rust 复兴 Laurent Constantin 的 **netwib + netwox + netwag 5.39.0** 能力全
 | 层 | 原组件 | crate | 说明 |
 |----|--------|-------|------|
 | 库 | netwib | `nz-net` | 网络能力，不复制 C API |
+| 解析 | toolarg/arg | `nz-arg`（规划中） | nz 风格参数解析（非 clap） |
 | CLI | netwox | `nz` | 数字工具号 + 具名子命令（双模式） |
 | GUI | netwag | `nz-gui` | native **egui** 工作台，不用 webview |
 
-当前处于第 4 闸：crate 骨架、CLI 注册表、工具 0。尚未实现用户工具 1–223 与 GUI。
+当前处于第 4 闸：crate 骨架、CLI 注册表、`nz-arg` 设计文档、工具 0。尚未实现用户工具 1–223 与 GUI。
 
 `README.md`（英文，默认）与 `README.zh.md` 必须同步更新。
 

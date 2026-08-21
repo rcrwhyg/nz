@@ -20,6 +20,7 @@
 | `nz-packet-codec` | [`.cursor/skills/nz-packet-codec/SKILL.md`](../.cursor/skills/nz-packet-codec/SKILL.md) | 以太/IP/TCP/UDP/ICMP/ARP 与校验和 |
 | `nz-pcap-record` | [`.cursor/skills/nz-pcap-record/SKILL.md`](../.cursor/skills/nz-pcap-record/SKILL.md) | record 格式、DLT、重组 |
 | `nz-cli-compat` | [`.cursor/skills/nz-cli-compat/SKILL.md`](../.cursor/skills/nz-cli-compat/SKILL.md) | 数字工具号、原参数名、help 树 |
+| `nz-arg-parser` | [`.cursor/skills/nz-arg-parser/SKILL.md`](../.cursor/skills/nz-arg-parser/SKILL.md) | `nz-arg`：bool 三态、help2、formupdate；非 clap |
 | `nz-privileges` | [`.cursor/skills/nz-privileges/SKILL.md`](../.cursor/skills/nz-privileges/SKILL.md) | raw socket、降权、授权目标 |
 | `nz-tool0-protocol` | [`.cursor/skills/nz-tool0-protocol/SKILL.md`](../.cursor/skills/nz-tool0-protocol/SKILL.md) | GUI 与 CLI 的工具 0 契约 |
 | `nz-gui-parity` | [`.cursor/skills/nz-gui-parity/SKILL.md`](../.cursor/skills/nz-gui-parity/SKILL.md) | lessons 工作流；egui only |

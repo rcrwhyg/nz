@@ -18,12 +18,14 @@ description: >-
 
 - 短选项字母与长名必须可映射到原工具。
 - 布尔：`-x` / `+x` / `--no-x`。
+- 解析一律走 **`nz-arg`**（见 `nz-arg-parser` skill 与 `doc/nz-arg/`）；禁止为单工具再写私有 argv 解析，禁止 clap 主路径。
 - 「显示类」开关全关时常表示全开（如工具 1、3、134）；以该工具摘录为准。
 - 难猜枚举（`recordencode`、`dlt`、`spoofip`、encode）与工具 12 一致；GUI 用控件枚举，CLI 仍接受这些字符串。
 
 ## 帮助
 
-工具 0 `--toolhelp` 需要 help / example / usage / form（含 Advanced）。用户 `nz N --help` 可以现代化排版，但信息面要能对上 spec。
+- `--help` / `--?`：普通；`--help2` / `--??`：含 Advanced（由 `nz-arg` 识别，正文由 `nz` 渲染）。
+- 工具 0 `--toolhelp` 需要 help / example / usage / form（含 Advanced）。用户面向帮助可以现代化排版，但信息面要能对上 spec。
 
 ## 注册
 

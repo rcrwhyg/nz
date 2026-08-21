@@ -9,7 +9,7 @@
 ## 相位
 
 1. 库骨架：err/dat 子集、pkt 编解码、net 地址/设备 — draft 见 [netwib/README.md](netwib/README.md)
-2. CLI 注册表 + **工具 0** — draft 见 [netwox/README.md](netwox/README.md)
+2. CLI 注册表 + **`nz-arg` MVP** + **工具 0** — 注册表见 [netwox/registry.md](netwox/registry.md)；解析器见 [nz-arg/README.md](nz-arg/README.md)；工具 0 见 [netwox/README.md](netwox/README.md)
 3. 信息：1–6、12–13、169、187、213、218 — draft 见 [netwox/info/README.md](netwox/info/README.md)
 4. 非网络/文件：21–31、127–129、186、191、216、219–221、190 — draft 见 [netwox/files/README.md](netwox/files/README.md)
 5. record：14–20 — draft 见 [netwox/record/README.md](netwox/record/README.md)

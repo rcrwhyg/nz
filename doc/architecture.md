@@ -4,11 +4,14 @@
 
 ```
 netwib (C 库)     -->  nz-net（Rust 等价能力）
+toolarg / arg     -->  nz-arg（参数描述+解析；CLI/工具0/GUI 共用）
      |
 netwox (CLI)      -->  nz（数字工具号 + 具名子命令，双模式）
      |
 netwag (Tcl/Tk)   -->  nz-gui（native crate：egui，禁止 webview）
 ```
+
+`nz-arg` 设计见 [`doc/nz-arg/`](nz-arg/README.md)。MVP 不依赖 `nz-net`。
 
 安装/运行依赖（原版）：libpcap 或 WinPcap、可选 libnet、Tcl/Tk（仅 GUI）。Rust 侧用生态 crate 替代，不链原 `libnetwib`。
 

@@ -1,0 +1,24 @@
+# nz-arg（参数解析 crate）
+
+适用：设计、实现或接入 `nz-arg`；改工具 CLI 参数面、工具 0 form/formupdate。
+
+## 定位
+
+- 独立 crate：`nz-arg`——nz 风格、对齐 netwox toolarg **语义**的生产解析核。
+- 目的：与 `nz` / GUI **解耦**；作 clap **替代路径**（本阶段最小可用，非完整 clap）。
+- 文档：`doc/nz-arg/`；spec：`spec/nz-arg/`；skill：`nz-arg-parser`。
+
+## 硬约束
+
+1. MVP 含长名前缀、`--argfile`、`MORE`；RADIO / Generate / `--kbd` 交互见 `types-ext`，先问再做。
+2. **禁止**以 clap/pico-args 等作为 nz 工具参数主路径（调研用除外，且不得进依赖）。
+3. **`nz-arg` ↛ `nz-net`**（MVP）；禁止反向把解析逻辑塞进 `nz-net`。
+4. 库内 **不** `println` 帮助、**不**删除 arg/命令文件。
+5. 布尔三态与 `+x`、`--help2`/`--??`、`FormUpdate`、前缀冲突、argfile、MORE 语义必须可测。
+6. 行覆盖 ≥ 95%；零 warning；见名知意命名；每个 public 项有 `///`。
+7. 运行时依赖：`thiserror` 已批准；其它须决策协议。
+
+## 与产品闸关系
+
+- 注册表 bool_triple / help2 依赖本 crate MVP。
+- 工具 0 与 GUI Form 共用同一套 Schema/Parse；禁止旁路私有解析器。

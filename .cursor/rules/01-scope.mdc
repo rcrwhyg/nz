@@ -5,7 +5,7 @@ alwaysApply: true
 
 # 范围
 
-产品：`nz-net`（netwib 能力，非 C API）→ `nz` CLI（netwox 行为 + 工具 0）→ `nz-gui`（netwag 工作流）。
+产品：`nz-net`（netwib 能力，非 C API）+ `nz-arg`（toolarg 风格参数解析）→ `nz` CLI（netwox 行为 + 工具 0）→ `nz-gui`（netwag 工作流）。
 
 对照源 `netw-ib-ox-ag-5.39.0/` 只读，整树 gitignore，禁止修改或 `git add`。
 
@@ -13,7 +13,7 @@ GUI：仅 native crate（**egui**）。禁止 Tauri / Wry / webview / Tcl-Tk 移
 
 后置（实现前单独批准）：工具 73–86、98、101、130–132。清单见 `spec/netaudit/_deferred.md`。
 
-当前闸（crate + CLI 注册表 + 工具 0）：可实现库骨架与工具 0。禁止实现用户工具 1–223 业务、GUI、后置审计。运行时依赖须按决策协议先商量。
+当前闸（crate + CLI 注册表 + 工具 0）：可实现库骨架、**`nz-arg` MVP（先文档后代码）**与工具 0。禁止实现用户工具 1–223 业务、GUI、后置审计。运行时依赖须按决策协议先商量。禁止以 clap 作工具参数主路径（见 `07-nz-arg.mdc`）。
 
 对齐 5.39.0 完成前，禁止用「现代化」改变旧工具语义。现代协议只进 `spec/modern/`。
 

@@ -11,6 +11,7 @@
 | [architecture.md](architecture.md) | 三层对照与源码/HTML 指针 |
 | [inventory.md](inventory.md) | netwib 模块、223 工具、netwag 功能面 |
 | [gaps.md](gaps.md) | 动手写代码前仍待拍板的缺口 |
+| [nz-arg/](nz-arg/README.md) | 自研参数解析 crate：调研 / 设计 / 路线 |
 | [netwib/](netwib/README.md) | 库能力摘录（进行中） |
 | [netwox/](netwox/README.md) | 工具/协议摘录（进行中） |
 | [netwag/](netwag/README.md) | GUI 工作流摘录（进行中） |
