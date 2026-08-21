@@ -2,7 +2,7 @@
 
 - 模块：pkt（分层编解码）
 - 对照：`netwib-doc_html/netwib/pkt.html` + `pkt/*.h`
-- 状态：draft
+- 状态：partial（Eth+IPv4+UDP 最小集已实现；TCP/ARP/ICMP/conv/ipfrag 待续）
 
 ## 能力
 
@@ -40,8 +40,13 @@ IPv4 options / IPv6 ext / TCP options：长度须 4 字节对齐；IPv4/TCP opti
 
 ## 验收
 
-- [ ] `eth_ip4_udp_roundtrip`：最小 Ethernet+IPv4+UDP 编解码字节一致（自动 checksum）
-- [ ] `ipv4_literal_checksum_not_recomputed`：用户给定 checksum 则输出中保持该值
+本任务（最小 Eth+IPv4+UDP）已覆盖：
+
+- [x] `eth_ip4_udp_roundtrip`：最小 Ethernet+IPv4+UDP 编解码字节一致（自动 checksum）
+- [x] `ipv4_literal_checksum_not_recomputed`：用户给定 checksum 则输出中保持该值
+
+后续分期：
+
 - [ ] `tcp_syn_flags`：只置 SYN 时标志位正确
 - [ ] `arp_request_fields`：op=1 与四方地址
 - [ ] `icmp6_neighbor_solicit_decode`：能认出邻居请求类报文（不要求实现全部 ICMP 子类型）
@@ -51,7 +56,7 @@ IPv4 options / IPv6 ext / TCP options：长度须 4 字节对齐；IPv4/TCP opti
 
 ## 覆盖率
 
-库代码目标 ≥ 95%。缺口与理由：稀有 DLT、全部 ICMP 码点可分期，须在本 spec 列出未做类型。
+库代码目标 ≥ 95%。缺口与理由：TCP/ARP/ICMPv6/conv/ipfrag 未实现，不计入本分期；稀有 DLT、全部 ICMP 码点后续列出。
 
 ## 依赖
 

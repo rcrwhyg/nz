@@ -11,7 +11,7 @@
 | [net-addr.md](net-addr.md) | IP/Eth/port 与集合语法 — **implemented** |
 | [net-device.md](net-device.md) | 网卡列举（测试用假后端）— **implemented** |
 | [net-conf.md](net-conf.md) | 本机 IP/ARP/路由与到达（假后端）— **implemented** |
-| [pkt.md](pkt.md) | 分层编解码、conv、分片 |
+| [pkt.md](pkt.md) | 分层编解码、conv、分片 — **partial**（Eth+IPv4+UDP） |
 | [hash.md](hash.md) | 文件/字节摘要（md2–sha512；相位 4） |
 | [record.md](record.md) | record/pcap 读写（相位 5） |
 | [net-sniff.md](net-sniff.md) | 嗅探通道与假后端（相位 6） |

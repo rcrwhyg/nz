@@ -5,6 +5,7 @@
 pub mod dat;
 pub mod error;
 pub mod net;
+pub mod pkt;
 
 pub use dat::{
     ByteBuffer, DecodeFormat, EncodeFormat, InternetChecksum, checksum, decode_input, encode_bytes,
@@ -14,4 +15,8 @@ pub use net::{
     ArpEntry, Device, DeviceInventory, EthernetAddress, EthernetAddressSet, FakeDeviceInventory,
     FakeLocalConfiguration, HardwareType, IpAddressSet, IpOnDevice, LocalConfiguration, PortSet,
     Reachability, Route, RouteSource,
+};
+pub use pkt::{
+    EthernetFrame, EthernetIpv4Udp, EthernetType, Ipv4Packet, Ipv4Protocol, UdpDatagram,
+    sample_ethernet_ipv4_udp,
 };
