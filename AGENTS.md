@@ -21,8 +21,8 @@ Rust 复兴 Laurent Constantin 的 **netwib + netwox + netwag 5.39.0** 能力全
 1. 从 HTML/源码抽详细文档
 2. 写 `.cursor/skills/` 正文
 3. 按模板写 spec（先库，再工具族）
-4. crate + CLI 注册表 + 工具 0 — **当前**
-5. 按族实现工具
+4. crate + CLI 注册表 + 工具 0 — **已完成**
+5. 按族实现工具 — **当前**（一次一工具；已实现：工具 1）
 6. native GUI
 
 未经确认不进入下一闸。对齐完成前禁止用「现代化」改旧工具语义。
@@ -47,7 +47,7 @@ Rust 复兴 Laurent Constantin 的 **netwib + netwox + netwag 5.39.0** 能力全
 
 ## 禁止
 
-- **当前闸**：crate + CLI 注册表 + 工具 0。禁止实现用户工具 1–223 业务、GUI、后置审计；运行时依赖须先商量再引入
+- **当前闸**：按族实现用户工具（一次一工具）。禁止 GUI、后置审计；运行时依赖须先商量再引入
 - `git add netw-ib-ox-ag-5.39.0/`
 - 修改对照源；把 C 大段贴进 `doc/`
 - GUI 使用 Tauri / Wry / webview

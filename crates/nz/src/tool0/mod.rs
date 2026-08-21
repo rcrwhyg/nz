@@ -306,8 +306,12 @@ fn execute_dispatched_tool(
         let session = run_tool0_with(tool_arguments, hooks)?;
         return Ok((session.exit_code, session.output.render()));
     }
-    // 其它工具尚未实现：与 invoke_stub 同语义，但不 eprintln（由上层决定）
-    let _ = entry.suggested_name;
+    if entry.id.0 == 1 {
+        return match crate::tools::run_net_conf(tool_arguments) {
+            Ok(text) => Ok((0, text)),
+            Err(error) => Err(Tool0Error::Dispatch(error.to_string())),
+        };
+    }
     Ok((2, format!("tool {} not implemented", entry.id.0)))
 }
 
@@ -630,29 +634,28 @@ mod tests {
         assert!(!rendered.contains("lappend "));
     }
 
-    /// spec `tool0_toolhelp_form_has_advanced_split`
+    /// spec `tool0_toolhelp_form_has_advanced_split`（advanced 分组由 schema 元数据驱动；工具 1 无 Advanced）
     #[test]
     fn tool0_toolhelp_form_has_advanced_split() {
         let session = run_tool0(&args(&["-h", "-u", "1"])).expect("help");
         let help = session.output.toolhelp.as_ref().expect("surface");
         assert!(help.has_schema);
-        assert!(
-            help.form
-                .iter()
-                .any(|field| field.key == 'd' && !field.advanced)
-        );
-        assert!(
-            help.form_advanced
-                .iter()
-                .any(|field| field.key == 'a' && field.advanced)
-        );
+        for key in ['d', 'i', 'a', 'r'] {
+            assert!(
+                help.form
+                    .iter()
+                    .any(|field| field.key == key && !field.advanced),
+                "missing ordinary field {key}"
+            );
+        }
+        assert!(help.form_advanced.is_empty());
         assert!(!session.output.looks_like_tcl());
     }
 
     /// spec `tool0_formupdate_deletes_file` + `tool0_formupdate_skips_toolnum_token`
     #[test]
     fn tool0_formupdate_deletes_file_and_skips_toolnum() {
-        let path = temp_cmd_file("1 -d eth0\n");
+        let path = temp_cmd_file("1 -d\n");
         let path_str = path.to_str().expect("utf8").to_owned();
         let session = run_tool0(&args(&["-f", "-u", "1", "-b", &path_str])).expect("form");
         assert!(!path.exists(), "command file must be deleted");
@@ -660,7 +663,7 @@ mod tests {
         assert_eq!(update.tool_id, 1);
         assert_eq!(update.items.len(), 1);
         assert_eq!(update.items[0].key, 'd');
-        assert_eq!(update.items[0].value, "eth0");
+        assert_eq!(update.items[0].value, "1");
     }
 
     /// spec `tool0_run_executes_and_deletes`

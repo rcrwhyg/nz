@@ -366,3 +366,30 @@ pub fn format_conf(surface: &ConfSurface) -> String {
     }
     lines.join("\n")
 }
+
+#[cfg(test)]
+mod tests {
+    use super::form_fields_from_schema;
+    use nz_arg::{ArgSchema, ArgSpec};
+
+    /// 覆盖 Advanced 分组拆分（工具 0 验收仍依赖此行为）。
+    #[test]
+    fn form_fields_split_advanced() {
+        let schema = ArgSchema::try_from_specs(vec![
+            ArgSpec::optional_bool('d', "devices", "devices"),
+            ArgSpec::optional_string('a', "advnote", "note", None::<String>).advanced(),
+        ])
+        .expect("schema");
+        let (normal, advanced) = form_fields_from_schema(&schema);
+        assert!(
+            normal
+                .iter()
+                .any(|field| field.key == 'd' && !field.advanced)
+        );
+        assert!(
+            advanced
+                .iter()
+                .any(|field| field.key == 'a' && field.advanced)
+        );
+    }
+}

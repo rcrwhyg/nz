@@ -292,17 +292,37 @@ pub fn format_catalog() -> String {
     lines.join("\n")
 }
 
-/// 工具入口：工具 0 走契约实现；其余尚未实现。
+/// 工具入口：已实现工具走业务；其余打印未实现。
+#[must_use]
+pub fn invoke_tool(entry: ToolEntry, tool_arguments: &[String]) -> i32 {
+    match entry.id.0 {
+        0 => crate::tool0::invoke_tool0(tool_arguments),
+        1 => match crate::tools::run_net_conf(tool_arguments) {
+            Ok(text) => {
+                if !text.is_empty() {
+                    println!("{text}");
+                }
+                0
+            }
+            Err(error) => {
+                eprintln!("nz: {error}");
+                1
+            }
+        },
+        _ => {
+            eprintln!(
+                "nz: tool {} ({}) is registered but not implemented yet",
+                entry.id.0, entry.suggested_name
+            );
+            2
+        }
+    }
+}
+
+/// 兼容旧名：同 [`invoke_tool`]。
 #[must_use]
 pub fn invoke_stub(entry: ToolEntry, tool_arguments: &[String]) -> i32 {
-    if entry.id.0 == 0 {
-        return crate::tool0::invoke_tool0(tool_arguments);
-    }
-    eprintln!(
-        "nz: tool {} ({}) is registered but not implemented yet",
-        entry.id.0, entry.suggested_name
-    );
-    2
+    invoke_tool(entry, tool_arguments)
 }
 
 #[cfg(test)]

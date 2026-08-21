@@ -36,20 +36,20 @@ pub fn tool0_schema() -> ArgSchema {
     .expect("tool0 schema is static and valid")
 }
 
-/// 工具 1 参数桩（业务未实现；供 formupdate / toolhelp 验收）。
-///
-/// 含普通 `-d/--device` 与 Advanced `-a/--advnote`。
+/// 工具 1 参数表（对照 `000001.c` / `spec/netwox/info/001.md`）。
 ///
 /// # Panics
 ///
 /// 仅当静态描述表非法时 panic。
 #[must_use]
-pub fn tool1_stub_schema() -> ArgSchema {
+pub fn tool1_schema() -> ArgSchema {
     ArgSchema::try_from_specs(vec![
-        ArgSpec::optional_string('d', "device", "device to use", None::<String>),
-        ArgSpec::optional_string('a', "advnote", "advanced note", None::<String>).advanced(),
+        ArgSpec::optional_bool('d', "devices", "display devices"),
+        ArgSpec::optional_bool('i', "ip", "display ip addresses"),
+        ArgSpec::optional_bool('a', "arpcache", "display arp cache and neighbors"),
+        ArgSpec::optional_bool('r', "routes", "display routes"),
     ])
-    .expect("tool1 stub schema is static and valid")
+    .expect("tool1 schema is static and valid")
 }
 
 /// 按工具号取参数表；未挂载则 `None`。
@@ -57,7 +57,7 @@ pub fn tool1_stub_schema() -> ArgSchema {
 pub fn schema_for_tool(tool_id: u32) -> Option<ArgSchema> {
     match tool_id {
         0 => Some(tool0_schema()),
-        1 => Some(tool1_stub_schema()),
+        1 => Some(tool1_schema()),
         _ => None,
     }
 }
@@ -72,9 +72,9 @@ pub fn text_meta_for_tool(tool_id: u32) -> Option<ToolTextMeta> {
             usage: "nz 0|-|gui-info [options]",
         }),
         1 => Some(ToolTextMeta {
-            help: "Display network configuration (stub schema for GUI form tests).",
-            example: "nz 1 -d eth0",
-            usage: "nz 1|-|net-conf [options]",
+            help: "Display network configuration (devices, ip, arpcache, routes).",
+            example: "nz 1 -d",
+            usage: "nz 1|-|net-conf [-d|+d] [-i|+i] [-a|+a] [-r|+r]",
         }),
         _ => None,
     }
