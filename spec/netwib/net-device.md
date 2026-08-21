@@ -2,7 +2,7 @@
 
 - 模块：net / 网卡
 - 对照：`netwib-doc_html/netwib/net.html` + `net/device.h` + `net/confdev.h`
-- 状态：draft
+- 状态：implemented
 
 ## 能力
 
@@ -37,7 +37,7 @@ DLT 枚举与 `device.h` 同模块，但**各卡 sniff/spoof 能否用及 DLT** 
 
 ## 覆盖率
 
-库代码目标 ≥ 95%。缺口与理由：真网卡列举在 CI 可能测不到，缺口写「仅假后端计入覆盖」。
+库代码目标 ≥ 95%。缺口与理由：真网卡列举仅在 feature `system-inventory` 下提供桩（返回未实现），CI 只计假后端。
 
 ## 依赖
 

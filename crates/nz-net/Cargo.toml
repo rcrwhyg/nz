@@ -6,6 +6,11 @@ edition.workspace = true
 license.workspace = true
 repository.workspace = true
 
+[features]
+default = []
+## 启用真系统网卡/配置列举桩（当前返回 NotImplemented；CI 不启用）。
+system-inventory = []
+
 [dependencies]
 thiserror.workspace = true
 

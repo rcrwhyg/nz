@@ -9,8 +9,8 @@
 | [err.md](err.md) | 错误分区与 `Result` — **implemented** |
 | [dat.md](dat.md) | buf、编解码、Internet checksum — **implemented** |
 | [net-addr.md](net-addr.md) | IP/Eth/port 与集合语法 — **implemented** |
-| [net-device.md](net-device.md) | 网卡列举（测试用假后端） |
-| [net-conf.md](net-conf.md) | 本机 IP/ARP/路由与到达（假后端） |
+| [net-device.md](net-device.md) | 网卡列举（测试用假后端）— **implemented** |
+| [net-conf.md](net-conf.md) | 本机 IP/ARP/路由与到达（假后端）— **implemented** |
 | [pkt.md](pkt.md) | 分层编解码、conv、分片 |
 | [hash.md](hash.md) | 文件/字节摘要（md2–sha512；相位 4） |
 | [record.md](record.md) | record/pcap 读写（相位 5） |

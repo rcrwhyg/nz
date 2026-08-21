@@ -2,7 +2,7 @@
 
 - 模块：net / 本机配置
 - 对照：`netwib-doc_html/netwib/net.html` + `net/{conf,confdev,confip,confarp,confrout}.h`
-- 状态：draft
+- 状态：implemented
 
 ## 能力
 
@@ -36,7 +36,7 @@
 
 ## 覆盖率
 
-库代码目标 ≥ 95%。缺口与理由：真 conf 在 CI 可能测不到，缺口写「仅假后端计入覆盖」。
+库代码目标 ≥ 95%。缺口与理由：真 conf 仅在 feature `system-inventory` 下提供桩，CI 只计假后端。
 
 ## 依赖
 

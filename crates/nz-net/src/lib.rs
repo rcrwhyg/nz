@@ -10,4 +10,8 @@ pub use dat::{
     ByteBuffer, DecodeFormat, EncodeFormat, InternetChecksum, checksum, decode_input, encode_bytes,
 };
 pub use error::{Error, ErrorPartition, Result};
-pub use net::{EthernetAddress, EthernetAddressSet, IpAddressSet, PortSet};
+pub use net::{
+    ArpEntry, Device, DeviceInventory, EthernetAddress, EthernetAddressSet, FakeDeviceInventory,
+    FakeLocalConfiguration, HardwareType, IpAddressSet, IpOnDevice, LocalConfiguration, PortSet,
+    Reachability, Route, RouteSource,
+};
