@@ -15,3 +15,6 @@ pub use error::ParseError;
 pub use parse::{ParseMode, ParseOutcome, parse};
 pub use schema::{ArgClass, ArgSchema, ArgSpec, ValueKind};
 pub use value::{ArgValue, ParsedArgs};
+
+/// 将命令行文本拆成 token（供 argfile / 工具 0 命令文件共用）。
+pub use cmdline::tokenize;

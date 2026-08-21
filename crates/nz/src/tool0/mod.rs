@@ -1,13 +1,19 @@
-//! 工具 0（GUI 契约）切片 1：`--tools` / `--version` / `--error`。
+//! 工具 0（GUI 契约）：切片 1 + 切片 2（`--toolhelp` / `--formupdate`）。
 
+mod command_file;
 mod error_text;
 mod surface;
 
-use crate::registry::{ToolEntry, backspace_tool_ids, stdin_tool_ids, tools_for_search};
-use crate::tool_schemas::tool0_schema;
+use crate::registry::{
+    ToolEntry, backspace_tool_ids, lookup_by_id, stdin_tool_ids, tools_for_search,
+};
+use crate::tool_schemas::{schema_for_tool, text_meta_for_tool, tool0_schema};
 use nz_arg::{ParseMode, ParseOutcome, ParsedArgs, parse};
+use std::path::Path;
 use surface::{
-    ErrorSurface, ToolsSurface, VersionSurface, format_error, format_tools, format_version,
+    ErrorSurface, FormUpdateSurface, ToolHelpSurface, ToolsSurface, VersionSurface,
+    form_fields_from_schema, form_update_items, format_error, format_formupdate, format_toolhelp,
+    format_tools, format_version,
 };
 
 pub use surface::{ToolListEntry, ToolsSurface as Tool0ToolsSurface};
@@ -24,15 +30,25 @@ pub enum Tool0Error {
     },
     /// 切片尚未实现的开关。
     NotImplementedYet(&'static str),
+    /// 未知工具号（toolhelp / formupdate）。
+    UnknownTool(u32),
+    /// 命令文件问题。
+    CommandFile(String),
+    /// 目标工具尚无 ArgSchema（formupdate 需要）。
+    MissingSchema(u32),
 }
 
 impl std::fmt::Display for Tool0Error {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::Parse(message) => write!(formatter, "{message}"),
+            Self::Parse(message) | Self::CommandFile(message) => write!(formatter, "{message}"),
             Self::Help { .. } => write!(formatter, "help requested"),
             Self::NotImplementedYet(name) => {
                 write!(formatter, "tool 0 switch '{name}' is not implemented yet")
+            }
+            Self::UnknownTool(id) => write!(formatter, "unknown tool id {id}"),
+            Self::MissingSchema(id) => {
+                write!(formatter, "tool {id} has no argument schema for formupdate")
             }
         }
     }
@@ -40,11 +56,15 @@ impl std::fmt::Display for Tool0Error {
 
 impl std::error::Error for Tool0Error {}
 
-/// 切片 1 可产生的信息面集合。
+/// 工具 0 信息面集合。
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct Tool0Output {
     /// `--tools`。
     pub tools: Option<ToolsSurface>,
+    /// `--toolhelp`。
+    pub toolhelp: Option<ToolHelpSurface>,
+    /// `--formupdate`。
+    pub formupdate: Option<FormUpdateSurface>,
     /// `--error`。
     pub error: Option<ErrorSurface>,
     /// `--version`。
@@ -58,6 +78,12 @@ impl Tool0Output {
         let mut chunks = Vec::new();
         if let Some(tools) = &self.tools {
             chunks.push(format_tools(tools));
+        }
+        if let Some(toolhelp) = &self.toolhelp {
+            chunks.push(format_toolhelp(toolhelp));
+        }
+        if let Some(formupdate) = &self.formupdate {
+            chunks.push(format_formupdate(formupdate));
         }
         if let Some(error) = &self.error {
             chunks.push(format_error(error));
@@ -76,11 +102,11 @@ impl Tool0Output {
     }
 }
 
-/// 解析并执行工具 0（切片 1）。
+/// 解析并执行工具 0。
 ///
 /// # Errors
 ///
-/// 解析失败、请求 help、或打开未实现开关。
+/// 解析失败、请求 help、未知工具、命令文件失败、或打开未实现开关。
 pub fn run_tool0(tool_arguments: &[String]) -> Result<Tool0Output, Tool0Error> {
     match parse(&tool0_schema(), tool_arguments, ParseMode::Cli) {
         Ok(ParseOutcome::Help { include_advanced }) => Err(Tool0Error::Help { include_advanced }),
@@ -93,9 +119,23 @@ fn build_output(values: &ParsedArgs) -> Result<Tool0Output, Tool0Error> {
     reject_unimplemented(values)?;
 
     let mut output = Tool0Output::default();
-    // 顺序：tools → … → error → … → version
+    // 顺序：tools → toolhelp → formupdate → … → error → … → version
     if values.get_bool('t') == Some(true) {
         output.tools = Some(collect_tools_surface());
+    }
+    if values.get_bool('h') == Some(true) {
+        let tool_id = values.get_u32('u').unwrap_or(0);
+        output.toolhelp = Some(collect_toolhelp(tool_id)?);
+    }
+    if values.get_bool('f') == Some(true) {
+        let tool_id = values.get_u32('u').unwrap_or(0);
+        let path = values.get_string('b').unwrap_or("");
+        if path.is_empty() {
+            return Err(Tool0Error::CommandFile(String::from(
+                "formupdate requires --buf path",
+            )));
+        }
+        output.formupdate = Some(collect_formupdate(tool_id, Path::new(path))?);
     }
     if values.get_bool('e') == Some(true) {
         let code = values.get_u32('u').unwrap_or(0);
@@ -111,20 +151,76 @@ fn build_output(values: &ParsedArgs) -> Result<Tool0Output, Tool0Error> {
 }
 
 fn reject_unimplemented(values: &ParsedArgs) -> Result<(), Tool0Error> {
-    const UNIMPLEMENTED: &[(char, &str)] = &[
-        ('h', "toolhelp"),
-        ('f', "formupdate"),
-        ('r', "run"),
-        ('R', "run-key"),
-        ('k', "kill"),
-        ('c', "conf"),
-    ];
+    const UNIMPLEMENTED: &[(char, &str)] =
+        &[('r', "run"), ('R', "run-key"), ('k', "kill"), ('c', "conf")];
     for &(key, name) in UNIMPLEMENTED {
         if values.isset(key) && values.get_bool(key) == Some(true) {
             return Err(Tool0Error::NotImplementedYet(name));
         }
     }
     Ok(())
+}
+
+fn collect_toolhelp(tool_id: u32) -> Result<ToolHelpSurface, Tool0Error> {
+    let entry = lookup_by_id(tool_id).ok_or(Tool0Error::UnknownTool(tool_id))?;
+    let meta = text_meta_for_tool(tool_id);
+    let (has_schema, form, form_advanced) = match schema_for_tool(tool_id) {
+        Some(schema) => {
+            let (normal, advanced) = form_fields_from_schema(&schema);
+            (true, normal, advanced)
+        }
+        None => (false, Vec::new(), Vec::new()),
+    };
+    Ok(ToolHelpSurface {
+        tool_id,
+        title: entry.title.to_owned(),
+        help: meta.map_or_else(|| entry.title.to_owned(), |m| m.help.to_owned()),
+        example: meta.map(|m| m.example.to_owned()).unwrap_or_default(),
+        usage: meta.map_or_else(
+            || format!("nz {tool_id}|{} [options]", entry.suggested_name),
+            |m| m.usage.to_owned(),
+        ),
+        has_schema,
+        form,
+        form_advanced,
+    })
+}
+
+fn collect_formupdate(tool_id: u32, path: &Path) -> Result<FormUpdateSurface, Tool0Error> {
+    let _entry = lookup_by_id(tool_id).ok_or(Tool0Error::UnknownTool(tool_id))?;
+    let schema = schema_for_tool(tool_id).ok_or(Tool0Error::MissingSchema(tool_id))?;
+
+    let tokens = command_file::read_command_file_then_delete(path)
+        .map_err(|error| Tool0Error::CommandFile(error.to_string()))?;
+
+    // 跳过首 token 工具号（与 argv[0] 一样）
+    let rest = if tokens
+        .first()
+        .is_some_and(|token| token.parse::<u32>().is_ok())
+    {
+        &tokens[1..]
+    } else {
+        tokens.as_slice()
+    };
+
+    let parsed = match parse(&schema, rest, ParseMode::FormUpdate) {
+        Ok(ParseOutcome::Parsed(values)) => values,
+        Ok(ParseOutcome::Help { .. }) => {
+            return Err(Tool0Error::CommandFile(String::from(
+                "formupdate must not request help",
+            )));
+        }
+        Err(error) => {
+            return Err(Tool0Error::CommandFile(format!(
+                "formupdate parse failed: {error}"
+            )));
+        }
+    };
+
+    Ok(FormUpdateSurface {
+        tool_id,
+        items: form_update_items(&schema, &parsed),
+    })
 }
 
 fn collect_tools_surface() -> ToolsSurface {
@@ -211,9 +307,24 @@ pub fn invoke_tool0(tool_arguments: &[String]) -> i32 {
 mod tests {
     use super::{Tool0Error, run_tool0};
     use crate::registry::{DEFERRED_TOOL_IDS, backspace_tool_ids, stdin_tool_ids};
+    use std::io::Write;
 
     fn args(parts: &[&str]) -> Vec<String> {
         parts.iter().map(|part| (*part).to_owned()).collect()
+    }
+
+    fn temp_cmd_file(contents: &str) -> std::path::PathBuf {
+        let path = std::env::temp_dir().join(format!(
+            "nz-tool0-{}-{}.cmd",
+            std::process::id(),
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .expect("time")
+                .as_nanos()
+        ));
+        let mut file = std::fs::File::create(&path).expect("create");
+        write!(file, "{contents}").expect("write");
+        path
     }
 
     /// spec `tool0_tools_lists_and_marks`
@@ -278,7 +389,40 @@ mod tests {
     /// spec `tool0_unimplemented_switch_errors`
     #[test]
     fn tool0_unimplemented_switch_errors() {
-        let error = run_tool0(&args(&["-h", "-u", "1"])).expect_err("toolhelp");
-        assert!(matches!(error, Tool0Error::NotImplementedYet("toolhelp")));
+        let error = run_tool0(&args(&["-r", "-b", "x"])).expect_err("run");
+        assert!(matches!(error, Tool0Error::NotImplementedYet("run")));
+    }
+
+    /// spec `tool0_toolhelp_form_has_advanced_split`
+    #[test]
+    fn tool0_toolhelp_form_has_advanced_split() {
+        let output = run_tool0(&args(&["-h", "-u", "1"])).expect("help");
+        let help = output.toolhelp.as_ref().expect("surface");
+        assert!(help.has_schema);
+        assert!(
+            help.form
+                .iter()
+                .any(|field| field.key == 'd' && !field.advanced)
+        );
+        assert!(
+            help.form_advanced
+                .iter()
+                .any(|field| field.key == 'a' && field.advanced)
+        );
+        assert!(!output.looks_like_tcl());
+    }
+
+    /// spec `tool0_formupdate_deletes_file` + `tool0_formupdate_skips_toolnum_token`
+    #[test]
+    fn tool0_formupdate_deletes_file_and_skips_toolnum() {
+        let path = temp_cmd_file("1 -d eth0\n");
+        let path_str = path.to_str().expect("utf8").to_owned();
+        let output = run_tool0(&args(&["-f", "-u", "1", "-b", &path_str])).expect("form");
+        assert!(!path.exists(), "command file must be deleted");
+        let update = output.formupdate.expect("surface");
+        assert_eq!(update.tool_id, 1);
+        assert_eq!(update.items.len(), 1);
+        assert_eq!(update.items[0].key, 'd');
+        assert_eq!(update.items[0].value, "eth0");
     }
 }
