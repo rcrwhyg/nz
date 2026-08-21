@@ -21,6 +21,7 @@
 - 目标平台：Tier 1 = macOS aarch64 + Linux x86_64；Tier 2 = Windows + FreeBSD（不阻塞提交）
 - workspace 切分：**现在就拆**（`nz-net` 库 + `nz` CLI + `nz-gui`，骨架阶段建好结构）；参数解析另增 **`nz-arg`**（自研、对齐 toolarg，非 clap 主路径）
 - 工具参数解析：**自研 `nz-arg` crate**（方案 A；MVP 含长名前缀 / argfile / MORE；`--kbd`/RADIO/Generate 后置）
+- 工具 0：命令文件读成功即删；输出稳定行协议+结构化类型；分期实现；form 元数据按需挂 ArgSchema
 - 原 `test/netwibtest`：**分批整理成测试对照表**（随模块实现进度提取，放 `doc/netwib/test-matrix.md`，确保不遗漏边界用例）
 - Cargo edition：以根 `Cargo.toml` workspace 为准，edition 2024
 - crate 发布名：产品/CLI 仍叫 `nz`；若上 crates.io 再另取包名（现有 `nz` crate 已被占用）

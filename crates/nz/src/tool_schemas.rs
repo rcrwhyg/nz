@@ -1,14 +1,14 @@
-//! 工具级参数 schema（起步：工具 0 子集，供注册表验收与后续工具 0）。
+//! 工具级参数 schema。
 
 use nz_arg::{ArgSchema, ArgSpec};
 
-/// 工具 0 参数表（对照 `doc/netwox/tool0.md` 的布尔/字符串子集；完整契约另闸）。
+/// 工具 0 完整开关表（对照 `doc/netwox/tool0.md`）。
 ///
-/// 当前含 `-t/--tools` 等，足够 `bool_triple` / `help2` 验收；未列全的开关后续补齐。
+/// 切片 1 只实现 `--tools` / `--version` / `--error`；其余开关可解析但执行时报未实现。
 ///
 /// # Panics
 ///
-/// 仅当静态描述表非法时 panic（编译期常量错误，正常构建不会发生）。
+/// 仅当静态描述表非法时 panic（正常构建不会发生）。
 #[must_use]
 pub fn tool0_schema() -> ArgSchema {
     ArgSchema::try_from_specs(vec![

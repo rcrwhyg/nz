@@ -35,6 +35,8 @@ description: >-
 
 ## 副作用
 
-`--formupdate` / `--run` / `--run-key` 成功读到命令文件后**删除该文件**。若改为「调用方清理」，必须写进 spec 并让 GUI 适配——实现前再拍板。
+`--formupdate` / `--run` / `--run-key`：**读成功即删除命令文件**（已拍板，对齐原版）。
+
+本阶段切片：先实现 `--tools` / `--version` / `--error`；其余开关见 `spec/netwox/000.md`。
 
 Local_info 走 `0 -c`，不是直接跑工具 1。Remote_info 走工具 3。

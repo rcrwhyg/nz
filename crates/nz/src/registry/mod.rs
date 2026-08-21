@@ -178,44 +178,17 @@ pub fn format_catalog() -> String {
     lines.join("\n")
 }
 
-/// 工具入口桩：本闸不实现业务；工具 0 已接 `nz-arg` 解析 help / bool。
+/// 工具入口：工具 0 走契约实现；其余尚未实现。
 #[must_use]
 pub fn invoke_stub(entry: ToolEntry, tool_arguments: &[String]) -> i32 {
     if entry.id.0 == 0 {
-        return invoke_tool0_stub(tool_arguments);
+        return crate::tool0::invoke_tool0(tool_arguments);
     }
     eprintln!(
         "nz: tool {} ({}) is registered but not implemented yet",
         entry.id.0, entry.suggested_name
     );
     2
-}
-
-fn invoke_tool0_stub(tool_arguments: &[String]) -> i32 {
-    use crate::tool_schemas::tool0_schema;
-    use nz_arg::{ParseMode, ParseOutcome, parse};
-
-    match parse(&tool0_schema(), tool_arguments, ParseMode::Cli) {
-        Ok(ParseOutcome::Help { include_advanced }) => {
-            if include_advanced {
-                println!("nz tool 0 help (advanced)");
-            } else {
-                println!("nz tool 0 help");
-            }
-            0
-        }
-        Ok(ParseOutcome::Parsed(values)) => {
-            if values.get_bool('t') == Some(true) {
-                // 完整 `--tools` 输出下一任务；此处仅确认解析成功。
-                println!("nz tool 0: tools flag set");
-            }
-            0
-        }
-        Err(error) => {
-            eprintln!("nz: {error}");
-            1
-        }
-    }
 }
 
 #[cfg(test)]
