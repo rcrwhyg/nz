@@ -278,3 +278,84 @@ pub fn format_formupdate(surface: &FormUpdateSurface) -> String {
     }
     lines.join("\n")
 }
+
+/// `--run` / `--run-key` 结果。
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct RunSurface {
+    /// 被调工具退出码。
+    pub exit_code: i32,
+    /// 是否为 run-key。
+    pub waited_for_key: bool,
+    /// 若子工具为工具 0，为其渲染文本；否则可空。
+    pub child_output: String,
+}
+
+/// `--kill` 结果。
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct KillSurface {
+    /// 目标 PID。
+    pub pid: u32,
+    /// 睡眠毫秒。
+    pub sleep_ms: u32,
+    /// 始终视为成功（目标已死也忽略）。
+    pub ignored_missing: bool,
+}
+
+/// `--conf` 信息面（假或真配置的四表摘要）。
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ConfSurface {
+    /// `device:<num>:<easy>:<real>:<mtu>`
+    pub devices: Vec<String>,
+    /// `ip:<dev>:<addr>:<mask>`
+    pub ips: Vec<String>,
+    /// `arp:<dev>:<eth>:<ip>`
+    pub arps: Vec<String>,
+    /// `route:<dev>:<dst>:<mask>:<src>:<gw>:<metric>`
+    pub routes: Vec<String>,
+}
+
+/// 渲染 `section:run`。
+#[must_use]
+pub fn format_run(surface: &RunSurface) -> String {
+    let mut text = format!(
+        "section:run\nexit_code:{}\nwaited_for_key:{}",
+        surface.exit_code,
+        u8::from(surface.waited_for_key)
+    );
+    if !surface.child_output.is_empty() {
+        text.push('\n');
+        text.push_str(&surface.child_output);
+    }
+    text
+}
+
+/// 渲染 `section:kill`。
+#[must_use]
+pub fn format_kill(surface: &KillSurface) -> String {
+    [
+        String::from("section:kill"),
+        format!("pid:{}", surface.pid),
+        format!("sleep_ms:{}", surface.sleep_ms),
+        format!("ignored_missing:{}", u8::from(surface.ignored_missing)),
+    ]
+    .join("\n")
+}
+
+/// 渲染 `section:conf`。
+#[must_use]
+pub fn format_conf(surface: &ConfSurface) -> String {
+    let mut lines = vec![String::from("section:conf")];
+    for line in &surface.devices {
+        lines.push(format!("device:{line}"));
+    }
+    for line in &surface.ips {
+        lines.push(format!("ip:{line}"));
+    }
+    for line in &surface.arps {
+        lines.push(format!("arp:{line}"));
+    }
+    for line in &surface.routes {
+        lines.push(format!("route:{line}"));
+    }
+    lines.join("\n")
+}

@@ -1,22 +1,33 @@
-//! 工具 0（GUI 契约）：切片 1 + 切片 2（`--toolhelp` / `--formupdate`）。
+//! 工具 0（GUI 契约）：切片 1–3。
 
 mod command_file;
 mod error_text;
 mod surface;
 
 use crate::registry::{
-    ToolEntry, backspace_tool_ids, lookup_by_id, stdin_tool_ids, tools_for_search,
+    DispatchRequest, ToolEntry, backspace_tool_ids, dispatch, format_catalog, lookup_by_id,
+    stdin_tool_ids, tools_for_search,
 };
 use crate::tool_schemas::{schema_for_tool, text_meta_for_tool, tool0_schema};
 use nz_arg::{ParseMode, ParseOutcome, ParsedArgs, parse};
+use nz_net::{DeviceInventory, FakeLocalConfiguration, LocalConfiguration, RouteSource};
 use std::path::Path;
+use std::time::Duration;
 use surface::{
-    ErrorSurface, FormUpdateSurface, ToolHelpSurface, ToolsSurface, VersionSurface,
-    form_fields_from_schema, form_update_items, format_error, format_formupdate, format_toolhelp,
-    format_tools, format_version,
+    ConfSurface, ErrorSurface, FormUpdateSurface, KillSurface, RunSurface, ToolHelpSurface,
+    ToolsSurface, VersionSurface, form_fields_from_schema, form_update_items, format_conf,
+    format_error, format_formupdate, format_kill, format_run, format_toolhelp, format_tools,
+    format_version,
 };
 
 pub use surface::{ToolListEntry, ToolsSurface as Tool0ToolsSurface};
+
+/// 可注入行为（测试用：跳过按键等待、自定义 kill）。
+#[derive(Clone, Debug, Default)]
+pub struct Tool0Hooks {
+    /// 为 true 时 `--run-key` 不阻塞等待按键。
+    pub skip_key_wait: bool,
+}
 
 /// 工具 0 运行错误。
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -28,24 +39,28 @@ pub enum Tool0Error {
         /// 是否含 Advanced。
         include_advanced: bool,
     },
-    /// 切片尚未实现的开关。
-    NotImplementedYet(&'static str),
-    /// 未知工具号（toolhelp / formupdate）。
+    /// 未知工具号。
     UnknownTool(u32),
     /// 命令文件问题。
     CommandFile(String),
-    /// 目标工具尚无 ArgSchema（formupdate 需要）。
+    /// 目标工具尚无 `ArgSchema`（formupdate 需要）。
     MissingSchema(u32),
+    /// 分发失败。
+    Dispatch(String),
+    /// 配置导出失败。
+    Conf(String),
 }
 
 impl std::fmt::Display for Tool0Error {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::Parse(message) | Self::CommandFile(message) => write!(formatter, "{message}"),
-            Self::Help { .. } => write!(formatter, "help requested"),
-            Self::NotImplementedYet(name) => {
-                write!(formatter, "tool 0 switch '{name}' is not implemented yet")
+            Self::Parse(message)
+            | Self::CommandFile(message)
+            | Self::Dispatch(message)
+            | Self::Conf(message) => {
+                write!(formatter, "{message}")
             }
+            Self::Help { .. } => write!(formatter, "help requested"),
             Self::UnknownTool(id) => write!(formatter, "unknown tool id {id}"),
             Self::MissingSchema(id) => {
                 write!(formatter, "tool {id} has no argument schema for formupdate")
@@ -56,6 +71,15 @@ impl std::fmt::Display for Tool0Error {
 
 impl std::error::Error for Tool0Error {}
 
+/// 一次工具 0 调用的完整结果。
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
+pub struct Tool0Session {
+    /// 信息面。
+    pub output: Tool0Output,
+    /// 进程退出码（`--run`/`--run-key` 时取被调工具码，否则 0）。
+    pub exit_code: i32,
+}
+
 /// 工具 0 信息面集合。
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct Tool0Output {
@@ -65,8 +89,14 @@ pub struct Tool0Output {
     pub toolhelp: Option<ToolHelpSurface>,
     /// `--formupdate`。
     pub formupdate: Option<FormUpdateSurface>,
+    /// `--run` / `--run-key`。
+    pub run: Option<RunSurface>,
+    /// `--kill`。
+    pub kill: Option<KillSurface>,
     /// `--error`。
     pub error: Option<ErrorSurface>,
+    /// `--conf`。
+    pub conf: Option<ConfSurface>,
     /// `--version`。
     pub version: Option<VersionSurface>,
 }
@@ -85,8 +115,17 @@ impl Tool0Output {
         if let Some(formupdate) = &self.formupdate {
             chunks.push(format_formupdate(formupdate));
         }
+        if let Some(run) = &self.run {
+            chunks.push(format_run(run));
+        }
+        if let Some(kill) = &self.kill {
+            chunks.push(format_kill(kill));
+        }
         if let Some(error) = &self.error {
             chunks.push(format_error(error));
+        }
+        if let Some(conf) = &self.conf {
+            chunks.push(format_conf(conf));
         }
         if let Some(version) = &self.version {
             chunks.push(format_version(version));
@@ -102,24 +141,36 @@ impl Tool0Output {
     }
 }
 
-/// 解析并执行工具 0。
+/// 解析并执行工具 0（默认 hooks）。
 ///
 /// # Errors
 ///
-/// 解析失败、请求 help、未知工具、命令文件失败、或打开未实现开关。
-pub fn run_tool0(tool_arguments: &[String]) -> Result<Tool0Output, Tool0Error> {
+/// 解析失败、请求 help、未知工具、命令文件失败等。
+pub fn run_tool0(tool_arguments: &[String]) -> Result<Tool0Session, Tool0Error> {
+    run_tool0_with(tool_arguments, &Tool0Hooks::default())
+}
+
+/// 解析并执行工具 0（可注入 hooks）。
+///
+/// # Errors
+///
+/// 同 [`run_tool0`]。
+pub fn run_tool0_with(
+    tool_arguments: &[String],
+    hooks: &Tool0Hooks,
+) -> Result<Tool0Session, Tool0Error> {
     match parse(&tool0_schema(), tool_arguments, ParseMode::Cli) {
         Ok(ParseOutcome::Help { include_advanced }) => Err(Tool0Error::Help { include_advanced }),
-        Ok(ParseOutcome::Parsed(values)) => build_output(&values),
+        Ok(ParseOutcome::Parsed(values)) => build_session(&values, hooks),
         Err(error) => Err(Tool0Error::Parse(error.to_string())),
     }
 }
 
-fn build_output(values: &ParsedArgs) -> Result<Tool0Output, Tool0Error> {
-    reject_unimplemented(values)?;
-
+fn build_session(values: &ParsedArgs, hooks: &Tool0Hooks) -> Result<Tool0Session, Tool0Error> {
     let mut output = Tool0Output::default();
-    // 顺序：tools → toolhelp → formupdate → … → error → … → version
+    let mut exit_code = 0;
+
+    // 顺序：tools → toolhelp → formupdate → run → run-key → kill → error → conf → version
     if values.get_bool('t') == Some(true) {
         output.tools = Some(collect_tools_surface());
     }
@@ -137,6 +188,40 @@ fn build_output(values: &ParsedArgs) -> Result<Tool0Output, Tool0Error> {
         }
         output.formupdate = Some(collect_formupdate(tool_id, Path::new(path))?);
     }
+
+    let want_run = values.get_bool('r') == Some(true);
+    let want_run_key = values.get_bool('R') == Some(true);
+    if want_run || want_run_key {
+        let path = values.get_string('b').unwrap_or("");
+        if path.is_empty() {
+            return Err(Tool0Error::CommandFile(String::from(
+                "run requires --buf path",
+            )));
+        }
+        let (child_code, child_output) = execute_run_file(Path::new(path), hooks)?;
+        if want_run_key && !hooks.skip_key_wait {
+            wait_for_any_key();
+        }
+        exit_code = child_code;
+        output.run = Some(RunSurface {
+            exit_code: child_code,
+            waited_for_key: want_run_key && !hooks.skip_key_wait,
+            child_output,
+        });
+    }
+
+    if values.get_bool('k') == Some(true) {
+        let pid = values.get_u32('u').unwrap_or(0);
+        let sleep_ms = parse_sleep_ms(values.get_string('b').unwrap_or(""));
+        std::thread::sleep(Duration::from_millis(u64::from(sleep_ms)));
+        let _ = terminate_process(pid);
+        output.kill = Some(KillSurface {
+            pid,
+            sleep_ms,
+            ignored_missing: true,
+        });
+    }
+
     if values.get_bool('e') == Some(true) {
         let code = values.get_u32('u').unwrap_or(0);
         output.error = Some(ErrorSurface {
@@ -144,21 +229,149 @@ fn build_output(values: &ParsedArgs) -> Result<Tool0Output, Tool0Error> {
             text: error_text::describe(code),
         });
     }
+
+    if values.get_bool('c') == Some(true) {
+        output.conf = Some(collect_conf()?);
+    }
+
     if values.get_bool('v') == Some(true) {
         output.version = Some(package_version());
     }
-    Ok(output)
+
+    Ok(Tool0Session { output, exit_code })
 }
 
-fn reject_unimplemented(values: &ParsedArgs) -> Result<(), Tool0Error> {
-    const UNIMPLEMENTED: &[(char, &str)] =
-        &[('r', "run"), ('R', "run-key"), ('k', "kill"), ('c', "conf")];
-    for &(key, name) in UNIMPLEMENTED {
-        if values.isset(key) && values.get_bool(key) == Some(true) {
-            return Err(Tool0Error::NotImplementedYet(name));
-        }
+fn parse_sleep_ms(raw: &str) -> u32 {
+    if raw.is_empty() {
+        return 0;
     }
-    Ok(())
+    raw.parse().unwrap_or(0)
+}
+
+fn wait_for_any_key() {
+    use std::io::Read;
+    let mut buffer = [0_u8; 1];
+    let _ = std::io::stdin().read(&mut buffer);
+}
+
+fn terminate_process(pid: u32) -> Result<(), ()> {
+    if pid == 0 {
+        return Err(());
+    }
+    #[cfg(unix)]
+    {
+        let status = std::process::Command::new("kill")
+            .args(["-TERM", &pid.to_string()])
+            .stdout(std::process::Stdio::null())
+            .stderr(std::process::Stdio::null())
+            .status()
+            .map_err(|_| ())?;
+        if status.success() { Ok(()) } else { Err(()) }
+    }
+    #[cfg(windows)]
+    {
+        let status = std::process::Command::new("taskkill")
+            .args(["/PID", &pid.to_string(), "/F"])
+            .stdout(std::process::Stdio::null())
+            .stderr(std::process::Stdio::null())
+            .status()
+            .map_err(|_| ())?;
+        if status.success() { Ok(()) } else { Err(()) }
+    }
+}
+
+fn execute_run_file(path: &Path, hooks: &Tool0Hooks) -> Result<(i32, String), Tool0Error> {
+    let tokens = command_file::read_command_file_then_delete(path)
+        .map_err(|error| Tool0Error::CommandFile(error.to_string()))?;
+    let mut argv = Vec::with_capacity(tokens.len() + 1);
+    argv.push(String::from("nz"));
+    argv.extend(tokens);
+
+    match dispatch(&argv) {
+        Ok(DispatchRequest::Catalog) => Ok((0, format_catalog())),
+        Ok(DispatchRequest::Run {
+            entry,
+            tool_arguments,
+        }) => execute_dispatched_tool(entry, &tool_arguments, hooks),
+        Err(error) => Err(Tool0Error::Dispatch(error.to_string())),
+    }
+}
+
+fn execute_dispatched_tool(
+    entry: ToolEntry,
+    tool_arguments: &[String],
+    hooks: &Tool0Hooks,
+) -> Result<(i32, String), Tool0Error> {
+    if entry.id.0 == 0 {
+        let session = run_tool0_with(tool_arguments, hooks)?;
+        return Ok((session.exit_code, session.output.render()));
+    }
+    // 其它工具尚未实现：与 invoke_stub 同语义，但不 eprintln（由上层决定）
+    let _ = entry.suggested_name;
+    Ok((2, format!("tool {} not implemented", entry.id.0)))
+}
+
+fn collect_conf() -> Result<ConfSurface, Tool0Error> {
+    // CI / 默认：假配置；真网卡日后走 system-inventory
+    let conf = FakeLocalConfiguration::sample();
+    let devices = conf
+        .list_devices()
+        .map_err(|error| Tool0Error::Conf(error.to_string()))?;
+    let ips = conf
+        .list_ip_addresses()
+        .map_err(|error| Tool0Error::Conf(error.to_string()))?;
+    let arps = conf
+        .list_arp_entries()
+        .map_err(|error| Tool0Error::Conf(error.to_string()))?;
+    let routes = conf
+        .list_routes()
+        .map_err(|error| Tool0Error::Conf(error.to_string()))?;
+
+    Ok(ConfSurface {
+        devices: devices
+            .into_iter()
+            .map(|device| {
+                format!(
+                    "{}:{}:{}:{}",
+                    device.number, device.easy_name, device.real_name, device.mtu
+                )
+            })
+            .collect(),
+        ips: ips
+            .into_iter()
+            .map(|entry| {
+                format!(
+                    "{}:{}:{}",
+                    entry.device_number, entry.address, entry.netmask
+                )
+            })
+            .collect(),
+        arps: arps
+            .into_iter()
+            .map(|entry| format!("{}:{}:{}", entry.device_number, entry.ethernet, entry.ip))
+            .collect(),
+        routes: routes
+            .into_iter()
+            .map(|route| {
+                let source = match route.source {
+                    RouteSource::Local => String::from("local"),
+                    RouteSource::Address(address) => address.to_string(),
+                };
+                let gateway = route
+                    .gateway
+                    .map_or_else(|| String::from("-"), |address| address.to_string());
+                format!(
+                    "{}:{}:{}:{}:{}:{}",
+                    route.device_number,
+                    route.destination,
+                    route.netmask,
+                    source,
+                    gateway,
+                    route.metric
+                )
+            })
+            .collect(),
+    })
 }
 
 fn collect_toolhelp(tool_id: u32) -> Result<ToolHelpSurface, Tool0Error> {
@@ -193,7 +406,6 @@ fn collect_formupdate(tool_id: u32, path: &Path) -> Result<FormUpdateSurface, To
     let tokens = command_file::read_command_file_then_delete(path)
         .map_err(|error| Tool0Error::CommandFile(error.to_string()))?;
 
-    // 跳过首 token 工具号（与 argv[0] 一样）
     let rest = if tokens
         .first()
         .is_some_and(|token| token.parse::<u32>().is_ok())
@@ -281,12 +493,12 @@ fn package_version() -> VersionSurface {
 #[must_use]
 pub fn invoke_tool0(tool_arguments: &[String]) -> i32 {
     match run_tool0(tool_arguments) {
-        Ok(output) => {
-            let text = output.render();
+        Ok(session) => {
+            let text = session.output.render();
             if !text.is_empty() {
                 println!("{text}");
             }
-            0
+            session.exit_code
         }
         Err(Tool0Error::Help { include_advanced }) => {
             if include_advanced {
@@ -305,7 +517,7 @@ pub fn invoke_tool0(tool_arguments: &[String]) -> i32 {
 
 #[cfg(test)]
 mod tests {
-    use super::{Tool0Error, run_tool0};
+    use super::{Tool0Error, Tool0Hooks, run_tool0, run_tool0_with};
     use crate::registry::{DEFERRED_TOOL_IDS, backspace_tool_ids, stdin_tool_ids};
     use std::io::Write;
 
@@ -327,11 +539,17 @@ mod tests {
         path
     }
 
+    fn test_hooks() -> Tool0Hooks {
+        Tool0Hooks {
+            skip_key_wait: true,
+        }
+    }
+
     /// spec `tool0_tools_lists_and_marks`
     #[test]
     fn tool0_tools_lists_and_marks() {
-        let output = run_tool0(&args(&["--tools"])).expect("tools");
-        let tools = output.tools.expect("surface");
+        let session = run_tool0(&args(&["--tools"])).expect("tools");
+        let tools = session.output.tools.expect("surface");
         assert!(tools.tools.iter().any(|tool| tool.id == 1));
         assert!(
             !tools
@@ -356,8 +574,8 @@ mod tests {
     /// spec `tool0_version_triple`
     #[test]
     fn tool0_version_triple() {
-        let output = run_tool0(&args(&["-v"])).expect("version");
-        let version = output.version.expect("surface");
+        let session = run_tool0(&args(&["-v"])).expect("version");
+        let version = session.output.version.expect("surface");
         assert_eq!(
             (version.major, version.minor, version.micro),
             (0, 1, 0),
@@ -369,35 +587,29 @@ mod tests {
     #[test]
     fn tool0_error_text_nonempty() {
         let ok = run_tool0(&args(&["-e", "-u", "0"])).expect("e0");
-        assert!(!ok.error.expect("s").text.is_empty());
+        assert!(!ok.output.error.expect("s").text.is_empty());
         let other = run_tool0(&args(&["--error", "--uint", "2001"])).expect("e2001");
-        assert!(!other.error.expect("s").text.is_empty());
+        assert!(!other.output.error.expect("s").text.is_empty());
     }
 
     /// spec `tool0_no_tcl_required`
     #[test]
     fn tool0_no_tcl_required() {
-        let output = run_tool0(&args(&["-t", "-v", "-e", "-u", "0"])).expect("combo");
-        assert!(!output.looks_like_tcl());
-        let rendered = output.render();
+        let session = run_tool0(&args(&["-t", "-v", "-e", "-u", "0", "-c"])).expect("combo");
+        assert!(!session.output.looks_like_tcl());
+        let rendered = session.output.render();
         assert!(rendered.contains("section:tools"));
         assert!(rendered.contains("section:version"));
         assert!(rendered.contains("section:error"));
+        assert!(rendered.contains("section:conf"));
         assert!(!rendered.contains("lappend "));
-    }
-
-    /// spec `tool0_unimplemented_switch_errors`
-    #[test]
-    fn tool0_unimplemented_switch_errors() {
-        let error = run_tool0(&args(&["-r", "-b", "x"])).expect_err("run");
-        assert!(matches!(error, Tool0Error::NotImplementedYet("run")));
     }
 
     /// spec `tool0_toolhelp_form_has_advanced_split`
     #[test]
     fn tool0_toolhelp_form_has_advanced_split() {
-        let output = run_tool0(&args(&["-h", "-u", "1"])).expect("help");
-        let help = output.toolhelp.as_ref().expect("surface");
+        let session = run_tool0(&args(&["-h", "-u", "1"])).expect("help");
+        let help = session.output.toolhelp.as_ref().expect("surface");
         assert!(help.has_schema);
         assert!(
             help.form
@@ -409,7 +621,7 @@ mod tests {
                 .iter()
                 .any(|field| field.key == 'a' && field.advanced)
         );
-        assert!(!output.looks_like_tcl());
+        assert!(!session.output.looks_like_tcl());
     }
 
     /// spec `tool0_formupdate_deletes_file` + `tool0_formupdate_skips_toolnum_token`
@@ -417,12 +629,65 @@ mod tests {
     fn tool0_formupdate_deletes_file_and_skips_toolnum() {
         let path = temp_cmd_file("1 -d eth0\n");
         let path_str = path.to_str().expect("utf8").to_owned();
-        let output = run_tool0(&args(&["-f", "-u", "1", "-b", &path_str])).expect("form");
+        let session = run_tool0(&args(&["-f", "-u", "1", "-b", &path_str])).expect("form");
         assert!(!path.exists(), "command file must be deleted");
-        let update = output.formupdate.expect("surface");
+        let update = session.output.formupdate.expect("surface");
         assert_eq!(update.tool_id, 1);
         assert_eq!(update.items.len(), 1);
         assert_eq!(update.items[0].key, 'd');
         assert_eq!(update.items[0].value, "eth0");
+    }
+
+    /// spec `tool0_run_executes_and_deletes`
+    #[test]
+    fn tool0_run_executes_and_deletes() {
+        let path = temp_cmd_file("0 -v\n");
+        let path_str = path.to_str().expect("utf8").to_owned();
+        let session = run_tool0_with(&args(&["-r", "-b", &path_str]), &test_hooks()).expect("run");
+        assert!(!path.exists());
+        assert_eq!(session.exit_code, 0);
+        let run = session.output.run.expect("run surface");
+        assert_eq!(run.exit_code, 0);
+        assert!(run.child_output.contains("section:version"));
+        assert!(run.child_output.contains("major:0"));
+    }
+
+    /// `--run-key` 在 `skip_key_wait` 下不阻塞
+    #[test]
+    fn tool0_run_key_skips_wait_in_tests() {
+        let path = temp_cmd_file("0 -v\n");
+        let path_str = path.to_str().expect("utf8").to_owned();
+        let session =
+            run_tool0_with(&args(&["-R", "-b", &path_str]), &test_hooks()).expect("run-key");
+        assert!(!path.exists());
+        assert!(!session.output.run.expect("r").waited_for_key);
+    }
+
+    /// spec `tool0_kill_missing_pid_ok`
+    #[test]
+    fn tool0_kill_missing_pid_ok() {
+        let session = run_tool0(&args(&["-k", "-u", "4294967294", "-b", "0"])).expect("kill");
+        let kill = session.output.kill.expect("surface");
+        assert_eq!(kill.pid, 4_294_967_294);
+        assert_eq!(kill.sleep_ms, 0);
+        assert!(kill.ignored_missing);
+        assert_eq!(session.exit_code, 0);
+    }
+
+    /// `--conf` 导出四表且非空
+    #[test]
+    fn tool0_conf_exports_fake_tables() {
+        let session = run_tool0(&args(&["-c"])).expect("conf");
+        let conf = session.output.conf.expect("surface");
+        assert!(!conf.devices.is_empty());
+        assert!(!conf.ips.is_empty());
+        assert!(!conf.arps.is_empty());
+        assert!(!conf.routes.is_empty());
+    }
+
+    #[test]
+    fn tool0_unknown_toolhelp_errors() {
+        let error = run_tool0(&args(&["-h", "-u", "224"])).expect_err("bad");
+        assert!(matches!(error, Tool0Error::UnknownTool(224)));
     }
 }
