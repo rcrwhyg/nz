@@ -2,7 +2,7 @@
 
 - 模块：net / 地址
 - 对照：`netwib-doc_html/netwib/net.html` + `net/{ip,eth,port,ips,eths,ports}.h`
-- 状态：draft
+- 状态：implemented
 
 ## 能力
 
@@ -40,7 +40,7 @@ Ethernet 集合另支持 `/prefix` 与 `%prefix`（`%` 去掉两端广播地址�
 
 ## 覆盖率
 
-库代码目标 ≥ 95%。缺口与理由：（实现时填；IPv6 范围若分期须写明）
+库代码目标 ≥ 95%。CI `-p nz-net --fail-under-lines 95` 强制。IPv6 范围与 hostname `=` 范围在工具侧验收时再对齐；本模块覆盖 v6 CIDR/`%` 与 v4 同等语法。
 
 ## 依赖
 

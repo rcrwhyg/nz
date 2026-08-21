@@ -315,4 +315,9 @@ mod tests {
         assert_eq!(encode_bytes(b"A", EncodeFormat::Base64), "QQ==");
         assert_eq!(encode_bytes(b"AB", EncodeFormat::Base64), "QUI=");
     }
+
+    #[test]
+    fn encode_hexa_wrap_short_text_unchanged() {
+        assert_eq!(encode_bytes(&[0x01, 0x02], EncodeFormat::HexaWrap), "01 02");
+    }
 }

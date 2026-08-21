@@ -4,8 +4,10 @@
 
 pub mod dat;
 pub mod error;
+pub mod net;
 
 pub use dat::{
     ByteBuffer, DecodeFormat, EncodeFormat, InternetChecksum, checksum, decode_input, encode_bytes,
 };
 pub use error::{Error, ErrorPartition, Result};
+pub use net::{EthernetAddress, EthernetAddressSet, IpAddressSet, PortSet};

@@ -239,12 +239,9 @@ mod tests {
     }
 
     #[test]
-    fn decode_mixed_empty_hex_run_is_error() {
-        assert!(decode_input("''", DecodeFormat::Mixed).is_ok());
-        assert!(matches!(
-            decode_input("xy", DecodeFormat::Mixed),
-            Err(Error::InvalidParameter { .. })
-        ));
+    fn decode_invalid_parameter_messages() {
+        assert!(decode_input("0", DecodeFormat::Hexa).is_err());
+        assert!(decode_input("", DecodeFormat::Base64).is_ok());
     }
 
     #[test]
@@ -269,5 +266,18 @@ mod tests {
             decode_input("4142", DecodeFormat::Mixed).expect("hex run"),
             b"AB".to_vec()
         );
+    }
+
+    #[test]
+    fn decode_mixed_empty_hex_run_is_error() {
+        assert!(decode_input("''", DecodeFormat::Mixed).is_ok());
+        assert!(matches!(
+            decode_input("xy", DecodeFormat::Mixed),
+            Err(Error::InvalidParameter { .. })
+        ));
+        assert!(matches!(
+            decode_input("010", DecodeFormat::Mixed),
+            Err(Error::InvalidParameter { .. })
+        ));
     }
 }
