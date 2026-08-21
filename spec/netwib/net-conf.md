@@ -36,7 +36,7 @@
 
 ## 覆盖率
 
-库代码目标 ≥ 95%。缺口与理由：真 conf 仅在 feature `system-inventory` 下提供桩，CI 只计假后端。
+库代码目标 ≥ 95%。缺口与理由：真 conf 在 feature `system-inventory` 下启用；CI `--all-features` 覆盖查询路径，不依赖 root。ARP 在非 Linux 可能为空（无 `/proc`）；路由在非 Linux 由接口前缀推导。
 
 ## 依赖
 

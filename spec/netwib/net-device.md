@@ -37,7 +37,7 @@ DLT 枚举与 `device.h` 同模块，但**各卡 sniff/spoof 能否用及 DLT** 
 
 ## 覆盖率
 
-库代码目标 ≥ 95%。缺口与理由：真网卡列举仅在 feature `system-inventory` 下提供桩（返回未实现），CI 只计假后端。
+库代码目标 ≥ 95%。缺口与理由：真网卡列举在 feature `system-inventory` 下启用（`if-addrs`）；CI `--all-features` 覆盖，不依赖 root。MAC/MTU 在真路径上可能为占位（MTU 默认值、MAC 暂空）。
 
 ## 依赖
 

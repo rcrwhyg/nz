@@ -8,11 +8,12 @@ repository.workspace = true
 
 [features]
 default = []
-## 启用真系统网卡/配置列举桩（当前返回 NotImplemented；CI 不启用）。
-system-inventory = []
+## 启用真系统网卡/配置列举（`if-addrs` + Linux `/proc`；CI 可用，不依赖 root）。
+system-inventory = ["dep:if-addrs"]
 
 [dependencies]
 thiserror.workspace = true
+if-addrs = { workspace = true, optional = true }
 
 [lints]
 workspace = true

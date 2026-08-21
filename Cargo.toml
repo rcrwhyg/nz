@@ -13,6 +13,7 @@ unsafe_code = "forbid"
 
 [workspace.dependencies]
 thiserror = "2.0.20"
+if-addrs = "0.15.0"
 
 [workspace.lints.clippy]
 all = { level = "deny", priority = -1 }

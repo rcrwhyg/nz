@@ -7,7 +7,7 @@ license.workspace = true
 repository.workspace = true
 
 [dependencies]
-nz-net = { path = "../nz-net" }
+nz-net = { path = "../nz-net", features = ["system-inventory"] }
 nz-arg = { path = "../nz-arg" }
 
 [lints]

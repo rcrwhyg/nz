@@ -37,6 +37,6 @@ description: >-
 
 `--formupdate` / `--run` / `--run-key`：**读成功即删除命令文件**（已拍板，对齐原版）。
 
-本阶段：工具 0 主路径（tools/toolhelp/formupdate/run/kill/conf/version/error）已实现；完整 tooltree 与真 `--conf` 为增强项。
+本阶段：工具 0 主路径已实现，并含完整 tooltree 与真系统 `--conf`（`system-inventory`）。
 
 Local_info 走 `0 -c`，不是直接跑工具 1。Remote_info 走工具 3。

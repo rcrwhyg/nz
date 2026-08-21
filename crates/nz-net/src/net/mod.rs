@@ -8,6 +8,9 @@ mod ethernet;
 mod ip_set;
 mod port_set;
 
+#[cfg(feature = "system-inventory")]
+mod system_inventory;
+
 pub use conf::{
     ArpEntry, FakeLocalConfiguration, IpOnDevice, LocalConfiguration, Reachability, Route,
     RouteSource,
@@ -18,6 +21,6 @@ pub use ip_set::IpAddressSet;
 pub use port_set::PortSet;
 
 #[cfg(feature = "system-inventory")]
-pub use conf::list_system_configuration_stub;
-#[cfg(feature = "system-inventory")]
 pub use device::list_system_devices;
+#[cfg(feature = "system-inventory")]
+pub use system_inventory::SystemLocalConfiguration;

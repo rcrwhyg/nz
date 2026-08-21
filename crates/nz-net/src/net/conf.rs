@@ -1,12 +1,10 @@
 //! 本机网络配置：IP / ARP / 路由 / 到达。
 //!
 //! 对照 `spec/netwib/net-conf.md` 与 netwib `net/{conf,confip,confarp,confrout}.h`。
-//! 默认测试走 [`FakeLocalConfiguration`]；真读取仅在 `system-inventory` feature 下提供桩。
+//! 默认测试走 [`FakeLocalConfiguration`]；真读取在 `system-inventory` feature 下启用。
 
 use std::net::{IpAddr, Ipv4Addr};
 
-#[cfg(feature = "system-inventory")]
-use crate::error::Error;
 use crate::error::Result;
 use crate::net::EthernetAddress;
 use crate::net::device::{Device, DeviceInventory, FakeDeviceInventory};
@@ -245,17 +243,8 @@ impl LocalConfiguration for FakeLocalConfiguration {
     }
 }
 
-/// 真系统配置读取桩（feature 门控；CI 默认关闭）。
-///
-/// # Errors
-///
-/// 始终返回 [`Error::NotImplemented`]。
-#[cfg(feature = "system-inventory")]
-pub fn list_system_configuration_stub() -> Result<()> {
-    Err(Error::NotImplemented)
-}
-
-fn select_route(routes: &[Route], destination: IpAddr) -> Option<&Route> {
+/// 按最长前缀匹配选择路由。
+pub(crate) fn select_route(routes: &[Route], destination: IpAddr) -> Option<&Route> {
     routes
         .iter()
         .filter(|route| route_matches(route, destination))
@@ -287,7 +276,12 @@ fn prefix_length(netmask: IpAddr) -> u32 {
     }
 }
 
-fn lookup_arp(entries: &[ArpEntry], device_number: u32, ip: IpAddr) -> Option<EthernetAddress> {
+/// 在 ARP 表中查找 `device_number` + `ip` 对应的 Ethernet 地址。
+pub(crate) fn lookup_arp(
+    entries: &[ArpEntry],
+    device_number: u32,
+    ip: IpAddr,
+) -> Option<EthernetAddress> {
     entries
         .iter()
         .find(|entry| entry.device_number == device_number && entry.ip == ip)
@@ -382,10 +376,7 @@ mod tests {
         assert!(FakeLocalConfiguration::sample().list_routes().is_ok());
         #[cfg(feature = "system-inventory")]
         {
-            assert!(matches!(
-                super::list_system_configuration_stub(),
-                Err(crate::Error::NotImplemented)
-            ));
+            assert!(crate::net::SystemLocalConfiguration::query().is_ok());
         }
     }
 }

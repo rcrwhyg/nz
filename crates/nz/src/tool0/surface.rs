@@ -28,10 +28,8 @@ pub struct ToolsSurface {
     pub stdin: Vec<u32>,
     /// 需要 backspace 的号。
     pub backspace: Vec<u32>,
-    /// 树根名（切片 1：`main`）。
-    pub tree_root: String,
-    /// 挂在树根下的工具号。
-    pub tree_children: Vec<u32>,
+    /// 分类树（根为 `main`；已剪去无已发布工具的空枝）。
+    pub tree: Vec<crate::registry::SearchTreeNode>,
 }
 
 /// `--version` 信息面。
@@ -202,9 +200,18 @@ pub fn format_tools(surface: &ToolsSurface) -> String {
     for id in &surface.backspace {
         lines.push(format!("backspace:{id}"));
     }
-    lines.push(format!("tree_node:{}", surface.tree_root));
-    for id in &surface.tree_children {
-        lines.push(format!("tree_child_tool:{}:{id}", surface.tree_root));
+    lines.push(format!(
+        "tree_root:{}",
+        surface.tree.first().map_or("main", |node| node.id.as_str())
+    ));
+    for node in &surface.tree {
+        lines.push(format!("tree_node:{}:{}", node.id, node.label));
+        for child in &node.child_categories {
+            lines.push(format!("tree_child_cat:{}:{child}", node.id));
+        }
+        for tool_id in &node.child_tools {
+            lines.push(format!("tree_child_tool:{}:{tool_id}", node.id));
+        }
     }
     lines.join("\n")
 }

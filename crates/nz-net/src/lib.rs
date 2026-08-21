@@ -16,6 +16,9 @@ pub use net::{
     FakeLocalConfiguration, HardwareType, IpAddressSet, IpOnDevice, LocalConfiguration, PortSet,
     Reachability, Route, RouteSource,
 };
+
+#[cfg(feature = "system-inventory")]
+pub use net::{SystemLocalConfiguration, list_system_devices};
 pub use pkt::{
     EthernetFrame, EthernetIpv4Udp, EthernetType, Ipv4Packet, Ipv4Protocol, UdpDatagram,
     sample_ethernet_ipv4_udp,

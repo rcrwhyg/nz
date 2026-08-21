@@ -5,12 +5,12 @@ mod error_text;
 mod surface;
 
 use crate::registry::{
-    DispatchRequest, ToolEntry, backspace_tool_ids, dispatch, format_catalog, lookup_by_id,
-    stdin_tool_ids, tools_for_search,
+    DispatchRequest, ToolEntry, backspace_tool_ids, build_search_tree, dispatch, format_catalog,
+    lookup_by_id, stdin_tool_ids, tools_for_search,
 };
 use crate::tool_schemas::{schema_for_tool, text_meta_for_tool, tool0_schema};
 use nz_arg::{ParseMode, ParseOutcome, ParsedArgs, parse};
-use nz_net::{DeviceInventory, FakeLocalConfiguration, LocalConfiguration, RouteSource};
+use nz_net::{FakeLocalConfiguration, LocalConfiguration, RouteSource, SystemLocalConfiguration};
 use std::path::Path;
 use std::time::Duration;
 use surface::{
@@ -312,8 +312,13 @@ fn execute_dispatched_tool(
 }
 
 fn collect_conf() -> Result<ConfSurface, Tool0Error> {
-    // CI / 默认：假配置；真网卡日后走 system-inventory
-    let conf = FakeLocalConfiguration::sample();
+    if let Ok(conf) = SystemLocalConfiguration::query() {
+        return conf_surface_from(&conf);
+    }
+    conf_surface_from(&FakeLocalConfiguration::sample())
+}
+
+fn conf_surface_from(conf: &impl LocalConfiguration) -> Result<ConfSurface, Tool0Error> {
     let devices = conf
         .list_devices()
         .map_err(|error| Tool0Error::Conf(error.to_string()))?;
@@ -454,8 +459,6 @@ fn collect_tools_surface() -> ToolsSurface {
         }
     }
 
-    let tree_children: Vec<u32> = release.iter().map(|entry| entry.id.0).collect();
-
     ToolsSurface {
         max_id,
         count: u32::try_from(tools.len()).unwrap_or(u32::MAX),
@@ -463,8 +466,7 @@ fn collect_tools_surface() -> ToolsSurface {
         synonyms,
         stdin: stdin_tool_ids(),
         backspace: backspace_tool_ids(),
-        tree_root: String::from("main"),
-        tree_children,
+        tree: build_search_tree(),
     }
 }
 
@@ -567,8 +569,31 @@ mod tests {
         assert_eq!(tools.backspace, backspace_tool_ids());
         assert_eq!(tools.stdin, vec![7, 14, 87, 88, 89, 90, 99, 152, 171]);
         assert_eq!(tools.backspace, vec![138, 139, 210]);
-        assert_eq!(tools.tree_root, "main");
-        assert!(tools.tree_children.contains(&1));
+        assert_eq!(
+            tools.tree.first().map(|node| node.id.as_str()),
+            Some("main")
+        );
+        assert!(
+            tools
+                .tree
+                .iter()
+                .any(|node| node.id == "info-local" && node.child_tools.contains(&1)),
+            "tool 1 under info-local"
+        );
+        assert!(
+            tools
+                .tree
+                .iter()
+                .any(|node| node.id == "ping" && node.child_tools.contains(&49)),
+            "tool 49 under ping"
+        );
+        assert!(
+            !tools.tree.iter().any(|node| node.child_tools.contains(&0)),
+            "tool 0 not in tree"
+        );
+        let rendered = crate::tool0::surface::format_tools(&tools);
+        assert!(rendered.contains("tree_child_cat:main:info"));
+        assert!(rendered.contains("tree_child_tool:info-local:1"));
     }
 
     /// spec `tool0_version_triple`
@@ -674,15 +699,20 @@ mod tests {
         assert_eq!(session.exit_code, 0);
     }
 
-    /// `--conf` 导出四表且非空
+    /// `--conf` 导出四表且非空（真系统优先；失败回落假表）
     #[test]
     fn tool0_conf_exports_fake_tables() {
         let session = run_tool0(&args(&["-c"])).expect("conf");
-        let conf = session.output.conf.expect("surface");
+        let conf = session.output.conf.as_ref().expect("surface");
         assert!(!conf.devices.is_empty());
         assert!(!conf.ips.is_empty());
-        assert!(!conf.arps.is_empty());
+        // ARP 在 macOS 可能为空；路由在真系统或假表下应非空
         assert!(!conf.routes.is_empty());
+        let rendered = session.output.render();
+        assert!(rendered.contains("section:conf"));
+        assert!(rendered.contains("device:"));
+        assert!(rendered.contains("ip:"));
+        assert!(rendered.contains("route:"));
     }
 
     #[test]

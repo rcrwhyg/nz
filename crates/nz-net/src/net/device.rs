@@ -1,7 +1,7 @@
 //! 本机网卡列举。
 //!
 //! 对照 `spec/netwib/net-device.md` 与 netwib `net/{device,confdev}.h`。
-//! 默认测试走 [`FakeDeviceInventory`]；真网卡读取仅在 `system-inventory` feature 下提供桩。
+//! 默认测试走 [`FakeDeviceInventory`]；真网卡读取在 `system-inventory` feature 下启用。
 
 use std::fmt;
 use std::str::FromStr;
@@ -147,16 +147,15 @@ impl DeviceInventory for FakeDeviceInventory {
     }
 }
 
-/// 真系统网卡列举。
-///
-/// 当前闸仅提供 feature 门控桩，返回未实现；CI 默认不启用，不依赖 root。
+/// 真系统网卡列举（feature `system-inventory`）。
 ///
 /// # Errors
 ///
-/// 始终返回 [`Error::NotImplemented`]（直至后续接入平台后端）。
+/// 透传 [`crate::net::SystemLocalConfiguration::query`] 的失败。
 #[cfg(feature = "system-inventory")]
 pub fn list_system_devices() -> Result<Vec<Device>> {
-    Err(Error::NotImplemented)
+    use crate::net::DeviceInventory;
+    crate::net::SystemLocalConfiguration::query()?.list_devices()
 }
 
 #[cfg(test)]
@@ -212,14 +211,11 @@ mod tests {
     /// spec `device_list_real_ignored_in_ci`
     #[test]
     fn device_list_real_ignored_in_ci() {
-        // 假后端始终可用；真路径（feature）返回未实现，不碰网卡/root。
+        // 假后端始终可用；真路径（feature）不依赖 root。
         assert!(FakeDeviceInventory::empty().list_devices().is_ok());
         #[cfg(feature = "system-inventory")]
         {
-            assert!(matches!(
-                super::list_system_devices(),
-                Err(crate::Error::NotImplemented)
-            ));
+            assert!(super::list_system_devices().is_ok());
         }
     }
 }

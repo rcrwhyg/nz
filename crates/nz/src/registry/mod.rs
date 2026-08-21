@@ -3,11 +3,13 @@
 //! 对照 `spec/netwox/registry.md`：静态表 + 数字/建议名等价；不含工具体实现。
 
 mod entries;
+mod tooltree_data;
 
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::sync::OnceLock;
 
 pub use entries::{DEFERRED_TOOL_IDS, TOOL_ENTRIES};
+pub use tooltree_data::{TOOL_TREE_PLACEMENTS, TREE_CATEGORIES, TreeCategory};
 
 /// 工具号（0–223）。
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
@@ -136,6 +138,118 @@ pub fn backspace_tool_ids() -> Vec<u32> {
     ids
 }
 
+/// Search 树中的一个分类节点（已按发布工具剪枝）。
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct SearchTreeNode {
+    /// 稳定 id（如 `info-local`）。
+    pub id: String,
+    /// 显示标签。
+    pub label: String,
+    /// 子分类 id。
+    pub child_categories: Vec<String>,
+    /// 直接挂接的已发布工具号（排序）。
+    pub child_tools: Vec<u32>,
+}
+
+/// 判断分类子树是否含已发布工具（直接或间接）。
+fn subtree_relevant(
+    category_id: &str,
+    categories: &HashMap<&str, &TreeCategory>,
+    tools_by_category: &HashMap<&str, Vec<u32>>,
+    memo: &mut HashMap<String, bool>,
+) -> bool {
+    if let Some(cached) = memo.get(category_id) {
+        return *cached;
+    }
+    let has_direct = tools_by_category
+        .get(category_id)
+        .is_some_and(|tools| !tools.is_empty());
+    let Some(category) = categories.get(category_id) else {
+        memo.insert(category_id.to_owned(), false);
+        return false;
+    };
+    let has_child = category
+        .child_categories
+        .iter()
+        .any(|child| subtree_relevant(child, categories, tools_by_category, memo));
+    let relevant = has_direct || has_child;
+    memo.insert(category_id.to_owned(), relevant);
+    relevant
+}
+
+/// 构建供 `--tools` 使用的分类树（根为 `main`；后置/未登记工具不入树）。
+#[must_use]
+pub fn build_search_tree() -> Vec<SearchTreeNode> {
+    let release_ids: HashSet<u32> = tools_for_search().map(|entry| entry.id.0).collect();
+    let categories: HashMap<&str, &TreeCategory> = TREE_CATEGORIES
+        .iter()
+        .map(|category| (category.id, category))
+        .collect();
+
+    let mut tools_by_category: HashMap<&str, Vec<u32>> = HashMap::new();
+    for &(tool_id, category_ids) in TOOL_TREE_PLACEMENTS {
+        if !release_ids.contains(&tool_id) {
+            continue;
+        }
+        for &category_id in category_ids {
+            tools_by_category
+                .entry(category_id)
+                .or_default()
+                .push(tool_id);
+        }
+    }
+    for tool_ids in tools_by_category.values_mut() {
+        tool_ids.sort_unstable();
+        tool_ids.dedup();
+    }
+
+    let mut relevant_memo = HashMap::new();
+    let mut kept: Vec<SearchTreeNode> = Vec::new();
+    let mut stack = vec![String::from("main")];
+    let mut seen = HashSet::new();
+    while let Some(category_id) = stack.pop() {
+        if !seen.insert(category_id.clone()) {
+            continue;
+        }
+        if !subtree_relevant(
+            category_id.as_str(),
+            &categories,
+            &tools_by_category,
+            &mut relevant_memo,
+        ) {
+            continue;
+        }
+        let Some(category) = categories.get(category_id.as_str()) else {
+            continue;
+        };
+        let child_categories: Vec<String> = category
+            .child_categories
+            .iter()
+            .copied()
+            .filter(|child| {
+                subtree_relevant(child, &categories, &tools_by_category, &mut relevant_memo)
+            })
+            .map(str::to_owned)
+            .collect();
+        stack.extend(child_categories.iter().cloned());
+        let child_tools = tools_by_category
+            .get(category_id.as_str())
+            .cloned()
+            .unwrap_or_default();
+        kept.push(SearchTreeNode {
+            id: category_id,
+            label: category.label.to_owned(),
+            child_categories,
+            child_tools,
+        });
+    }
+    kept.sort_by(|left, right| left.id.cmp(&right.id));
+    if let Some(index) = kept.iter().position(|node| node.id == "main") {
+        kept.swap(0, index);
+    }
+    kept
+}
+
 /// 解析 `argv`（含程序名）为分发请求。
 ///
 /// 规则：无参数或首个业务参数为 `--help` → 目录；否则数字优先，否则建议名。
@@ -195,7 +309,8 @@ pub fn invoke_stub(entry: ToolEntry, tool_arguments: &[String]) -> i32 {
 mod tests {
     use super::{
         DEFERRED_TOOL_IDS, DispatchRequest, PublishKind, TOOL_ENTRIES, backspace_tool_ids,
-        dispatch, format_catalog, lookup_by_id, lookup_by_name, stdin_tool_ids, tools_for_search,
+        build_search_tree, dispatch, format_catalog, lookup_by_id, lookup_by_name, stdin_tool_ids,
+        tools_for_search,
     };
 
     fn argv(args: &[&str]) -> Vec<String> {
@@ -258,6 +373,31 @@ mod tests {
             lookup_by_id(218).map(|entry| entry.publish),
             Some(PublishKind::Hidden)
         );
+    }
+
+    /// Search 树含分类与交叉挂载（非 main 平铺）
+    #[test]
+    fn registry_search_tree_has_categories() {
+        let tree = build_search_tree();
+        assert_eq!(tree.first().map(|node| node.id.as_str()), Some("main"));
+        assert!(
+            tree.iter()
+                .any(|node| node.id == "info-local" && node.child_tools.contains(&1))
+        );
+        assert!(
+            tree.iter()
+                .any(|node| node.id == "ping" && node.child_tools.contains(&49))
+        );
+        assert!(
+            tree.iter()
+                .any(|node| node.id == "main" && node.child_categories.iter().any(|c| c == "info"))
+        );
+        for id in DEFERRED_TOOL_IDS {
+            assert!(
+                !tree.iter().any(|node| node.child_tools.contains(id)),
+                "deferred {id} must not appear in search tree"
+            );
+        }
     }
 
     /// spec `registry_omits_deferred_by_default`
