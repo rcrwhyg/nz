@@ -52,12 +52,23 @@ pub fn tool1_schema() -> ArgSchema {
     .expect("tool1 schema is static and valid")
 }
 
+/// 工具 2 参数表（无参数；对照 `000002.c`）。
+///
+/// # Panics
+///
+/// 仅当静态描述表非法时 panic。
+#[must_use]
+pub fn tool2_schema() -> ArgSchema {
+    ArgSchema::try_from_specs(Vec::new()).expect("tool2 schema is static and valid")
+}
+
 /// 按工具号取参数表；未挂载则 `None`。
 #[must_use]
 pub fn schema_for_tool(tool_id: u32) -> Option<ArgSchema> {
     match tool_id {
         0 => Some(tool0_schema()),
         1 => Some(tool1_schema()),
+        2 => Some(tool2_schema()),
         _ => None,
     }
 }
@@ -75,6 +86,11 @@ pub fn text_meta_for_tool(tool_id: u32) -> Option<ToolTextMeta> {
             help: "Display network configuration (devices, ip, arpcache, routes).",
             example: "nz 1 -d",
             usage: "nz 1|-|net-conf [-d|+d] [-i|+i] [-a|+a] [-r|+r]",
+        }),
+        2 => Some(ToolTextMeta {
+            help: "Display debugging information (versions, platform, how conf is retrieved). No parameters.",
+            example: "nz 2",
+            usage: "nz 2|-|debug-info",
         }),
         _ => None,
     }
