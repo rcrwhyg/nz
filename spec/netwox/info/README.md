@@ -7,7 +7,7 @@
 | [001.md](001.md) | 1 | `net-conf` | **implemented** |
 | [002.md](002.md) | 2 | `debug-info` | **implemented** |
 | [003.md](003.md) | 3 | `host-info` | **implemented** |
-| [004.md](004.md) | 4 | `eth-info` | draft |
+| [004.md](004.md) | 4 | `eth-info` | **implemented** |
 | [005.md](005.md) | 5 | `arp-scan` | draft |
 | [006.md](006.md) | 6 | `route-to` | draft |
 | [012.md](012.md) | 12 | `param-values` | draft |
@@ -19,4 +19,4 @@
 
 库依赖：[net-conf.md](../../netwib/net-conf.md)、[net-addr.md](../../netwib/net-addr.md)、[net-device.md](../../netwib/net-device.md)、[dat.md](../../netwib/dat.md)。
 
-状态：工具 1–3 **implemented**；其余均为 `draft`。
+状态：工具 1–4 **implemented**；其余均为 `draft`。

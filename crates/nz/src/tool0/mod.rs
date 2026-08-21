@@ -324,6 +324,12 @@ fn execute_dispatched_tool(
             Err(error) => Err(Tool0Error::Dispatch(error.to_string())),
         };
     }
+    if entry.id.0 == 4 {
+        return match crate::tools::run_eth_info(tool_arguments) {
+            Ok(text) => Ok((0, text)),
+            Err(error) => Err(Tool0Error::Dispatch(error.to_string())),
+        };
+    }
     Ok((2, format!("tool {} not implemented", entry.id.0)))
 }
 

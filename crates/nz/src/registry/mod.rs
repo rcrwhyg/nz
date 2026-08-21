@@ -333,6 +333,18 @@ pub fn invoke_tool(entry: ToolEntry, tool_arguments: &[String]) -> i32 {
                 1
             }
         },
+        4 => match crate::tools::run_eth_info(tool_arguments) {
+            Ok(text) => {
+                if !text.is_empty() {
+                    println!("{text}");
+                }
+                0
+            }
+            Err(error) => {
+                eprintln!("nz: {error}");
+                1
+            }
+        },
         _ => {
             eprintln!(
                 "nz: tool {} ({}) is registered but not implemented yet",

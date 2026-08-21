@@ -81,6 +81,23 @@ pub fn tool3_schema() -> ArgSchema {
     .expect("tool3 schema is static and valid")
 }
 
+/// 工具 4 参数表（对照 `000004.c` / `spec/netwox/info/004.md`）。
+///
+/// # Panics
+///
+/// 仅当静态描述表非法时 panic。
+#[must_use]
+pub fn tool4_schema() -> ArgSchema {
+    ArgSchema::try_from_specs(vec![
+        ArgSpec::optional_bool('t', "title", "display titles").advanced(),
+        ArgSpec::optional_bool('i', "ip", "obtain IP address").advanced(),
+        ArgSpec::optional_bool('h', "host", "obtain hostname").advanced(),
+        ArgSpec::optional_bool('H', "hosts", "obtain hostnames").advanced(),
+        ArgSpec::required_string('e', "eth", "Ethernet address"),
+    ])
+    .expect("tool4 schema is static and valid")
+}
+
 /// 按工具号取参数表；未挂载则 `None`。
 #[must_use]
 pub fn schema_for_tool(tool_id: u32) -> Option<ArgSchema> {
@@ -89,6 +106,7 @@ pub fn schema_for_tool(tool_id: u32) -> Option<ArgSchema> {
         1 => Some(tool1_schema()),
         2 => Some(tool2_schema()),
         3 => Some(tool3_schema()),
+        4 => Some(tool4_schema()),
         _ => None,
     }
 }
@@ -116,6 +134,11 @@ pub fn text_meta_for_tool(tool_id: u32) -> Option<ToolTextMeta> {
             help: "Display information about an IP address or a hostname (ip/host/hosts/eth).",
             example: "nz 3 -q 127.0.0.1",
             usage: "nz 3|-|host-info -q hostname [advanced options]",
+        }),
+        4 => Some(ToolTextMeta {
+            help: "Display information about an Ethernet address (ip/host/hosts).",
+            example: "nz 4 -e aa:bb:cc:dd:ee:01",
+            usage: "nz 4|-|eth-info -e eth [advanced options]",
         }),
         _ => None,
     }
