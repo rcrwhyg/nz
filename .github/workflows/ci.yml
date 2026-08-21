@@ -57,9 +57,11 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - uses: taiki-e/install-action@cargo-llvm-cov
       - name: Coverage (nz-net line ≥95%)
-        run: cargo llvm-cov -p nz-net --all-features --summary-only --fail-under-lines 95 --lcov --output-path lcov.info
+        run: cargo llvm-cov -p nz-net --all-features --summary-only --fail-under-lines 95 --lcov --output-path lcov-nz-net.info
+      - name: Coverage (nz-arg line ≥95%)
+        run: cargo llvm-cov -p nz-arg --all-features --summary-only --fail-under-lines 95 --lcov --output-path lcov-nz-arg.info
       - name: Upload coverage
         uses: codecov/codecov-action@v7
         with:
-          files: lcov.info
+          files: lcov-nz-net.info,lcov-nz-arg.info
           fail_ci_if_error: false

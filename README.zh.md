@@ -12,7 +12,7 @@ Rust 复兴 Laurent Constantin 的 **netwib + netwox + netwag 5.39.0** 能力全
 | 层 | 原组件 | crate | 说明 |
 |----|--------|-------|------|
 | 库 | netwib | `nz-net` | 网络能力，不复制 C API |
-| 解析 | toolarg/arg | `nz-arg`（规划中） | nz 风格参数解析（非 clap） |
+| 解析 | toolarg/arg | `nz-arg` | nz 风格参数解析（非 clap） |
 | CLI | netwox | `nz` | 数字工具号 + 具名子命令（双模式） |
 | GUI | netwag | `nz-gui` | native **egui** 工作台，不用 webview |
 

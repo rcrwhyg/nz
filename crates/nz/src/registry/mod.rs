@@ -178,18 +178,44 @@ pub fn format_catalog() -> String {
     lines.join("\n")
 }
 
-/// 工具入口桩：本闸不实现业务，仅供分发测试。
+/// 工具入口桩：本闸不实现业务；工具 0 已接 `nz-arg` 解析 help / bool。
 #[must_use]
-pub fn invoke_stub(entry: ToolEntry, _tool_arguments: &[String]) -> i32 {
+pub fn invoke_stub(entry: ToolEntry, tool_arguments: &[String]) -> i32 {
     if entry.id.0 == 0 {
-        // 工具 0 本体下一任务实现；此处返回成功以便分发联通。
-        return 0;
+        return invoke_tool0_stub(tool_arguments);
     }
     eprintln!(
         "nz: tool {} ({}) is registered but not implemented yet",
         entry.id.0, entry.suggested_name
     );
     2
+}
+
+fn invoke_tool0_stub(tool_arguments: &[String]) -> i32 {
+    use crate::tool_schemas::tool0_schema;
+    use nz_arg::{ParseMode, ParseOutcome, parse};
+
+    match parse(&tool0_schema(), tool_arguments, ParseMode::Cli) {
+        Ok(ParseOutcome::Help { include_advanced }) => {
+            if include_advanced {
+                println!("nz tool 0 help (advanced)");
+            } else {
+                println!("nz tool 0 help");
+            }
+            0
+        }
+        Ok(ParseOutcome::Parsed(values)) => {
+            if values.get_bool('t') == Some(true) {
+                // 完整 `--tools` 输出下一任务；此处仅确认解析成功。
+                println!("nz tool 0: tools flag set");
+            }
+            0
+        }
+        Err(error) => {
+            eprintln!("nz: {error}");
+            1
+        }
+    }
 }
 
 #[cfg(test)]
@@ -284,6 +310,56 @@ mod tests {
         assert_eq!(
             dispatch(&argv(&["--help"])).expect("help"),
             DispatchRequest::Catalog
+        );
+    }
+
+    /// spec `bool_triple_parses`
+    #[test]
+    fn bool_triple_parses() {
+        use crate::tool_schemas::tool0_schema;
+        use nz_arg::{ParseMode, ParseOutcome, parse};
+
+        let schema = tool0_schema();
+        let on = match parse(&schema, &["-t"], ParseMode::Cli).expect("on") {
+            ParseOutcome::Parsed(values) => values,
+            ParseOutcome::Help { .. } => panic!("help"),
+        };
+        assert_eq!(on.get_bool('t'), Some(true));
+        assert!(on.isset('t'));
+
+        let off = match parse(&schema, &["+t"], ParseMode::Cli).expect("off") {
+            ParseOutcome::Parsed(values) => values,
+            ParseOutcome::Help { .. } => panic!("help"),
+        };
+        assert_eq!(off.get_bool('t'), Some(false));
+        assert!(off.isset('t'));
+
+        let no = match parse(&schema, &["--no-tools"], ParseMode::Cli).expect("no") {
+            ParseOutcome::Parsed(values) => values,
+            ParseOutcome::Help { .. } => panic!("help"),
+        };
+        assert_eq!(no.get_bool('t'), Some(false));
+        assert!(no.isset('t'));
+    }
+
+    /// spec `help_and_help2_flags_exist`
+    #[test]
+    fn help_and_help2_flags_exist() {
+        use crate::tool_schemas::tool0_schema;
+        use nz_arg::{ParseMode, ParseOutcome, parse};
+
+        let schema = tool0_schema();
+        assert_eq!(
+            parse(&schema, &["--help"], ParseMode::Cli).expect("help"),
+            ParseOutcome::Help {
+                include_advanced: false
+            }
+        );
+        assert_eq!(
+            parse(&schema, &["--help2"], ParseMode::Cli).expect("help2"),
+            ParseOutcome::Help {
+                include_advanced: true
+            }
         );
     }
 }

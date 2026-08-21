@@ -1,14 +1,13 @@
 [package]
-name = "nz"
-description = "Network toolbox CLI (netwox successor)"
+name = "nz-arg"
+description = "netwox-style CLI argument parser for nz (not clap)"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
 
 [dependencies]
-nz-net = { path = "../nz-net" }
-nz-arg = { path = "../nz-arg" }
+thiserror.workspace = true
 
 [lints]
 workspace = true

@@ -11,4 +11,4 @@
 
 **依赖方向**：`nz-arg` ↛ `nz-net`；`nz` → `nz-arg`。
 
-**状态**：设计已批准；实现走 `mvp.md`。
+**状态**：MVP implemented（见 `mvp.md`）。

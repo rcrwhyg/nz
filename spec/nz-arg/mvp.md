@@ -3,7 +3,7 @@
 - 模块：CLI 参数解析（对齐 netwox `toolarg`/`arg` 能力子集）
 - 对照：`modules/tool/toolarg.h`、`arg.c`、`conffile.c`（argfile 行规则）、`cmdline.c`（引号分词）
 - 摘录：[`doc/nz-arg/research.md`](../../doc/nz-arg/research.md)
-- 状态：approved（用户确认 crate 名 `nz-arg` 与扩大 MVP）
+- 状态：implemented
 - Crate：`nz-arg`
 
 ## 能力
@@ -41,31 +41,28 @@
 
 ## 验收
 
-- [ ] `schema_rejects_duplicate_keys` — 重复短键或长名构建失败
-- [ ] `schema_rejects_reserved_long_names` — `help`/`kbd`/`argfile` 拒绝
-- [ ] `parse_long_string_and_u32` — `--name val` / `-k val` 正确
-- [ ] `bool_triple_short_long` — `-x` 开、`+x` 关、`--flag` 开、`--no-flag` 关；`isset` 为真
-- [ ] `bool_cluster_short` — `-ab` / `+ab` 仅当 a,b 皆布尔
-- [ ] `long_name_unique_prefix` — `--dev` 匹配唯一前缀 `device`
-- [ ] `long_name_ambiguous_prefix_errors` — 前缀命中多个长名 → Err
-- [ ] `help_flags_basic` — `--help` 与 `--?` → `Help { include_advanced: false }`
-- [ ] `help_flags_advanced` — `--help2` 与 `--??` → `Help { include_advanced: true }`
-- [ ] `formupdate_ignores_help` — FormUpdate 下 `--help` → 未知长名错误（不进入 Help）
-- [ ] `formupdate_ignores_argfile` — FormUpdate 下 `--argfile` 不当作加载文件
-- [ ] `required_missing_errors` — Cli 下缺必选且无默认 → Err
-- [ ] `unknown_option_errors` — 未知 `-z` / `--zzz` → Err
-- [ ] `value_option_missing_value_errors` — `-k` 缺后续值 → Err
-- [ ] `more_after_double_dash` — `--` 后收集 MORE
-- [ ] `more_after_required_satisfied` — required 已满后的裸 token 进 MORE
-- [ ] `positional_fills_required` — 裸 token 填第一个未设 Required
-- [ ] `argfile_loads_and_merges` — 文件内选项合并进结果；`#` 与空行忽略
-- [ ] `argfile_quoted_tokens` — 引号保护含空格的值
-- [ ] `kbd_not_supported_errors` — Cli 下 `--kbd` → 明确错误
-
-（接入 `nz` 后：）
-
-- [ ] `registry_bool_triple_parses` — 见 `spec/netwox/registry.md`
-- [ ] `registry_help_and_help2_flags_exist` — 同上
+- [x] `schema_rejects_duplicate_keys`
+- [x] `schema_rejects_reserved_long_names`
+- [x] `parse_long_string_and_u32`
+- [x] `bool_triple_short_long`
+- [x] `bool_cluster_short`
+- [x] `long_name_unique_prefix`
+- [x] `long_name_ambiguous_prefix_errors`
+- [x] `help_flags_basic`
+- [x] `help_flags_advanced`
+- [x] `formupdate_ignores_help`
+- [x] `formupdate_ignores_argfile`
+- [x] `required_missing_errors`
+- [x] `unknown_option_errors`
+- [x] `value_option_missing_value_errors`
+- [x] `more_after_double_dash`
+- [x] `more_after_required_satisfied`
+- [x] `positional_fills_required`
+- [x] `argfile_loads_and_merges`
+- [x] `argfile_quoted_tokens`
+- [x] `kbd_not_supported_errors`
+- [x] `registry_bool_triple_parses` — 见 `spec/netwox/registry.md`
+- [x] `registry_help_and_help2_flags_exist` — 同上
 
 ## 覆盖率
 

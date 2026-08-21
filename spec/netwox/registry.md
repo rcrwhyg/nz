@@ -3,7 +3,7 @@
 - 模块：`nz` 分发与工具登记
 - 对照：`netwox.c`、`modules/tool/{tool,toolarg,tooltree,arg}.h`、`doc/netwox/`
 - 相位：`spec/_index.md` 第 2 项
-- 状态：partial（登记表+分发已实现；bool 三元组/`--help2` 阻塞于 [`nz-arg` MVP](../nz-arg/mvp.md)）
+- 状态：implemented（登记表+分发+`nz-arg` 布尔/`help2` 验收）
 
 ## 能力
 
@@ -73,15 +73,15 @@
 
 - [x] `dispatch_numeric_eq_named`：同一工具数字与建议名走到同一入口（可用工具 0 或登记桩）
 - [x] `dispatch_unknown_id_fails`：`224` 或未登记名失败
-- [ ] `bool_triple_parses`：`-t`、`+t`、`--no-tools` 可区分开关（阻塞于 `nz-arg` MVP）
-- [ ] `help_and_help2_flags_exist`：`--help` / `--help2` 被识别为帮助，不进业务 argv（阻塞于 `nz-arg` MVP）
+- [x] `bool_triple_parses`：`-t`、`+t`、`--no-tools` 可区分开关（经 `nz-arg` + 工具 0 schema）
+- [x] `help_and_help2_flags_exist`：`--help` / `--help2` 被识别为帮助，不进业务 argv
 - [x] `registry_stdin_backspace_lists`：stdin 为 7、14、87–90、99、152、171；backspace 为 138、139、210
 - [x] `registry_hides_zero_and_218`：`--tools` 不含 0 与 218
 - [x] `registry_omits_deferred_by_default`：默认表不含 73–86、98、101、130–132
 
 ## 覆盖率
 
-分发与登记属 CLI；本分期覆盖登记/分发路径。`bool_triple` / `help2` 待 `nz-arg` MVP 接入后计入。
+分发与登记属 CLI；本分期覆盖登记/分发与 `nz-arg` 接入路径。库覆盖率门槛见 `nz-arg` / `nz-net` CI。
 
 ## 依赖
 

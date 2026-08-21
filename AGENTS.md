@@ -9,7 +9,7 @@ Rust 复兴 Laurent Constantin 的 **netwib + netwox + netwag 5.39.0** 能力全
 | 层 | 原组件 | nz | 对齐对象 |
 |----|--------|-----|----------|
 | 库 | netwib | `nz-net` | `dat/sys/net/pkt/shw` **能力**，不复制 C API |
-| 解析 | toolarg/arg | 计划中的 `nz-arg` | netwox 风格参数语义（非 clap API） |
+| 解析 | toolarg/arg | `nz-arg` | netwox 风格参数语义（非 clap API） |
 | CLI | netwox | `nz` | 223 个工具能力全覆盖 + **工具 0**（GUI 契约） |
 | GUI | netwag | 计划中的 `nz-gui` | lessons 工作流；**egui**，禁止 webview |
 
@@ -61,12 +61,12 @@ Rust 复兴 Laurent Constantin 的 **netwib + netwox + netwag 5.39.0** 能力全
 
 ## 工程基础设施
 
-- **Workspace**：`crates/nz-net`（库）+ 计划中的 `crates/nz-arg`（参数解析）+ `crates/nz`（CLI）+ `crates/nz-gui`（GUI）
+- **Workspace**：`crates/nz-net`（库）+ `crates/nz-arg`（参数解析）+ `crates/nz`（CLI）+ `crates/nz-gui`（GUI）
 - **CI**：GitHub Actions（`ci.yml` fmt/clippy/nextest/deny/typos/coverage，macOS + Linux 矩阵）；Dependabot 每周扫 cargo 与 Actions
 - **Release**：git-cliff changelog + GitHub Release（tag `v*` 触发）；release-plz 手动触发 bump PR
 - **本地钩子**：pre-commit 是唯一本地质量门（fmt → clippy → nextest → deny → typos；每次 commit 全跑）
 - **供应链**：cargo-deny（许可证 + 安全公告 + 来源审计）
-- **覆盖率**：CI `coverage` job 对库 crate 强制 `--fail-under-lines 95`（现阶段 `nz-net`；`nz-arg` 落地后一并强制；工具 0 / GUI 完成后按 crate 扩展）；Codecov 仅报告。本地 `cargo llvm-cov` 可选，不进 pre-commit
+- **覆盖率**：CI `coverage` job 对库 crate 强制 `--fail-under-lines 95`（`nz-net` + `nz-arg`；工具 0 / GUI 完成后按 crate 扩展）；Codecov 仅报告。本地 `cargo llvm-cov` 可选，不进 pre-commit
 - **格式**：rustfmt（stable 配置）
 - **Commit 规范**：Conventional Commits（`feat/fix/docs/refactor/test/ci`）
 

@@ -12,7 +12,7 @@ License: [GPL-3.0-only](LICENSE)
 | Layer | Original | crate | Role |
 |-------|----------|-------|------|
 | Library | netwib | `nz-net` | Network capabilities, not a C API clone |
-| Args | toolarg/arg | `nz-arg` (planned) | netwox-style CLI parsing (not clap) |
+| Args | toolarg/arg | `nz-arg` | netwox-style CLI parsing (not clap) |
 | CLI | netwox | `nz` | Numeric tool IDs plus named subcommands |
 | GUI | netwag | `nz-gui` | Native **egui** workbench, no webview |
 

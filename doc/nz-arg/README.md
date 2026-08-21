@@ -12,4 +12,4 @@
 技能：`.cursor/skills/nz-arg-parser/SKILL.md`。
 硬约束：`.cursor/rules/07-nz-arg.mdc`。
 
-**状态**：设计草稿（draft）。未经用户批准不建 crate、不写业务解析代码。
+**状态**：MVP 已实现（`crates/nz-arg`）；扩展见 `types-ext.md`。
