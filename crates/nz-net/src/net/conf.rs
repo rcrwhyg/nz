@@ -5,7 +5,9 @@
 
 use std::net::{IpAddr, Ipv4Addr};
 
-use crate::error::{Error, Result};
+#[cfg(feature = "system-inventory")]
+use crate::error::Error;
+use crate::error::Result;
 use crate::net::EthernetAddress;
 use crate::net::device::{Device, DeviceInventory, FakeDeviceInventory};
 
